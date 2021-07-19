@@ -4,7 +4,7 @@ Tags: HomeworldRM HWRM Homeworld Remastered Multiplayer Patch Community Balance
 GameType: HomeworldRM
 ModType: MOD
 BigFilename: MPPatch.big
-WorkshopID:
+WorkshopID: 2551927766
 
 Description:
 The MP Patch is a continuation of the (2.3 Players Patch)[https://github.com/HW-PlayersPatch/Development], however all continued development is entirely multiplayer focused.
