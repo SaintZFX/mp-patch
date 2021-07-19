@@ -1,1 +1,1 @@
-mpp_version = " + MP Patch v1.0"
+mpp_version = " + Multiplayer Patch v1.0"
