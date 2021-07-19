@@ -1,7 +1,7 @@
 NewShipType = StartShipConfig()
 NewShipType.displayedName="$1530"
 NewShipType.sobDescription="$1531"
-NewShipType.maxhealth=getShipNum(NewShipType, "maxhealth", 90000)
+NewShipType.maxhealth=getShipNum(NewShipType, "maxhealth", 85000)
 NewShipType.regentime=750
 NewShipType.minRegenTime=750
 NewShipType.sideArmourDamage = getShipNum(NewShipType, "sideArmourDamage", 1.0)
@@ -62,7 +62,7 @@ NewShipType.AvoidanceFamily="Capital"
 NewShipType.DisplayFamily="Capital"
 NewShipType.AutoFormationFamily="CapShip"
 NewShipType.CollisionFamily="Big"
-NewShipType.ArmourFamily=getShipStr(NewShipType, "ArmourFamily", "HeavyArmour")
+NewShipType.ArmourFamily=getShipStr(NewShipType, "ArmourFamily", "DestroyerArmour")
 setSupplyValue(NewShipType, "Capital", 1.0)
 setSupplyValue(NewShipType, "Destroyer", 1.0)
 setSupplyValue(NewShipType, "LayoutDestroyer", 1.0)
@@ -80,8 +80,8 @@ NewShipType.buildPriorityOrder=20
 NewShipType.retaliationRange=6000
 NewShipType.retaliationDistanceFromGoal=160
 NewShipType.visualRange=1000
-NewShipType.prmSensorRange=6500
-NewShipType.secSensorRange=7500
+NewShipType.prmSensorRange=5500
+NewShipType.secSensorRange=6000
 NewShipType.detectionStrength=1
 NewShipType.TOIcon="Parallelogram"
 NewShipType.TOScale=1

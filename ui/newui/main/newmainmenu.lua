@@ -3,7 +3,7 @@ dofilepath("data:ui/newui/Styles/HWRM_Style/ControlConstructors.lua")
 dofilepath("data:ui/newui/Examples/ExampleIncludes.lua")
 dofilepath("data:ui/newui/Background/logo.lua")
 dofilepath("data:ui/newui/Main/ExButtons.lua")
-dofilepath("data:mpp-version.lua") 
+dofilepath("data:playerspatch_buildnumber.lua") 
 
 
 OptionsButton = [[
@@ -277,7 +277,7 @@ NewMainMenu = {
 				autosize = 1,
 				
 				Text = {	
-					text = mpp_version, --Pulled from mpp-version.lua
+					text = PlayersPatchBuildNumber, --Pulled from playerspatch_buildnumber.lua
 					font = "ButtonFont",
 					vAlign = "Middle",
 					color = {119,166,191,255},

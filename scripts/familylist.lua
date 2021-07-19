@@ -390,6 +390,10 @@ attackFamily =
 		numParam = 1,
 	},
 	{
+		name = "SmallTorpedo",
+		numParam = 1,
+	},
+	{
 		name = "HeavyMissile",
 		numParam = 1,
 	},
@@ -661,6 +665,12 @@ armourFamily =
     {
         name = "ProbeArmour",
     },
+	{
+		name = "DestroyerArmour"
+	},
+	{
+		name = "SuperUtilityArmour"
+	}
 }
 
 -- numParam -> display priority -> order undefined if priority not unique
@@ -762,6 +772,11 @@ unitcapsFamily =
 		name = "DefenseFieldFrigate",
 		numParam = 33,
 		stringParam = "$2124",
+	},
+	{
+		name = "FieldFrigate",
+		numParam = 34,
+		stringParam = "$2124", -- just use same str as dff
 	},
 	{
 		name = "Capital",

@@ -6,7 +6,7 @@ base_research = {
 		RequiredResearch =		"",                                                    -- <list of prerequisite research items>
 		RequiredSubSystems =		"Research | AdvancedResearch",                                                    -- <list of prerequisite sub systems>
 		Cost = 					1000,
-		Time = 					90,
+		Time = 					110,
 		DisplayedName =			"$7611",
 		DisplayPriority =			701,                                                   -- <display priority (used to sort on screen)>,
 		Description =			"$7612",
@@ -14,7 +14,7 @@ base_research = {
 		TargetType =			Ship,
 		TargetName =			"Hgn_ResourceCollector",
         	UpgradeName =			"MAXHEALTH",
-        	UpgradeValue =			1.6,
+        	UpgradeValue =			1.5,
 		Icon = 				Icon_Health,
 		ShortDisplayedName = 		"$7264",
 	},
@@ -32,7 +32,7 @@ base_research = {
 		TargetType =			Ship,
 		TargetName =			"Hgn_ResourceController",
         	UpgradeName =			"MAXHEALTH",
-        	UpgradeValue =			1.6,
+        	UpgradeValue =			1.5,
 		Icon = 				Icon_Health,
 		ShortDisplayedName = 		"$7267",
 	},

@@ -5,7 +5,7 @@ supplyLimit("Interceptor", 40);
 supplyLimit("Bomber", 40);
 supplyLimit("LanceFighter", 30);
 supplyLimit("Defenders", 12);
-supplyLimit("Defensefighters", 5);
+supplyLimit("Defensefighters", 6);
 supplyLimit("CloakedFighters", 12);
 --
 -- Vaygr FamilyOverride Fighter 56
@@ -14,7 +14,7 @@ supplyLimit("CloakedFighters", 12);
 --
 supplyLimit("Corvette", 24);
 
-supplyLimit("MinelayerCorvette",2);
+supplyLimit("MinelayerCorvette",1);
 supplyLimit("CommandCorvette",2);
 supplyLimit("SalvageCorvette",10);
 --
@@ -22,6 +22,7 @@ supplyLimit("SalvageCorvette",10);
 --
 supplyLimit("Frigate", 12);
 
+supplyLimit("FieldFrigate",2);
 supplyLimit("DefenseFieldFrigate",1);
 supplyLimit("CaptureFrigate",4);
 --
@@ -42,8 +43,8 @@ supplyLimit("Probe", 4);
 supplyLimit("ECMProbe", 4);
 supplyLimit("ProximitySensor", 4);
 --
-supplyLimit("Resource", 21);
-supplyLimit("ResourceCollector", 18);
+supplyLimit("Resource", 19);
+supplyLimit("ResourceCollector", 16);
 supplyLimit("ResourceController", 3);
 --
 supplyLimit("NonCombat", 20);
@@ -88,6 +89,7 @@ supplyIndent("CloakedFighters", 1);
 supplyIndent("CommandCorvette", 1);
 supplyIndent("SalvageCorvette", 1);
 
+supplyIndent("FieldFrigate", 1);
 supplyIndent("DefenseFieldFrigate", 1);
 supplyIndent("CaptureFrigate", 1);
 

@@ -1,7 +1,7 @@
 StartWeaponConfig(NewWeaponType,"AnimatedTurret","Bullet","Plasma_Bomb","Normal Only",1800,2000,0,0,0,0,1,1,1,0.7,1,2,1,0,260,40,0.1,"Normal",0,0,0);
 AddWeaponResult(NewWeaponType,"Hit","DamageHealth","Target",115,115,"");
-setPenetration(NewWeaponType,5,1,
-{TurretArmour=0.60},
+setPenetration(NewWeaponType,15,1,
+{TurretArmour=0.63},
 {ResArmour=0.17},
 {PlanetKillerArmour=0},
 {SwarmerArmor=0.10},
@@ -12,7 +12,9 @@ setPenetration(NewWeaponType,5,1,
 {LightArmour=0.7},
 {LightArmour_hw1=0.8},
 {MediumArmour=1.10},
+{SuperUtilityArmour = 1},
 {HeavyArmour=1.12},
+{DestroyerArmour = 1.22},
 {SubSystemArmour=2.5});
 setAccuracy(NewWeaponType,1,
 {Swarmer=0.01},
