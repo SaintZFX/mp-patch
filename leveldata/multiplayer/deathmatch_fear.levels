@@ -13,8 +13,8 @@ Tags = "dm,hw2,dm_hw2,hw1,dm_hw1"
 LevelList = {
 	{
 		Tags = "6p",
-		Name = "the-glade",
-		Desc = "The Glade",
+		Name = "boneyard",
+		Desc = "Fear :: Boneyard",
 		MaxPlayers = 6,
 	},
 }
