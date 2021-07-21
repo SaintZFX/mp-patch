@@ -7,7 +7,7 @@ BigFilename: MPPatch.big
 WorkshopID: 2551927766
 
 Description:
-The MP Patch is a continuation of the (2.3 Players Patch)[https://github.com/HW-PlayersPatch/Development], however all continued development is entirely multiplayer focused.
+The MP Patch is a continuation of the [2.3 Players Patch](https://github.com/HW-PlayersPatch/Development), however all continued development is entirely multiplayer focused.
 Although campaign will still work fine, it may be arbitarily harder or easier as no mind has been paid to campaign balancing.
 The MP Patch will include maps, music, further balancing and bugfixing, map features and more.
 ---
