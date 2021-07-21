@@ -43,7 +43,7 @@ base_research = {
 		RequiredSubSystems =		"AdvancedResearch & CapShipProduction",
 		Cost = 				2250,
 		Time = 				60,
-		DisplayedName =			"$7805",
+		DisplayedName =			"Carrier Production Speed",
 		DisplayPriority =		65,
 		Description =			"$7806",
 		UpgradeType =			Modifier,
@@ -52,7 +52,7 @@ base_research = {
 	        UpgradeName =			"BUILDSPEED",
         	UpgradeValue =			1.3,
 		Icon = 				Icon_Build,
-		ShortDisplayedName = 		"$7240",
+		ShortDisplayedName = 		"Carrier Prod. Speed",
 	},
 	 
 }

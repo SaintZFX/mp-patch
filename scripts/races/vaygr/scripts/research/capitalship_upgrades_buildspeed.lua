@@ -8,7 +8,7 @@ base_research = {
 		RequireTag = 			"VaygrBuilder",    
 		Cost = 				1000,
 		Time = 				60,
-		DisplayedName =			"$7815",
+		DisplayedName =			"Flagship Production Speed",
 		DisplayPriority =		90,
 		Description =			"$7816",
 		UpgradeType =			Modifier,
@@ -17,7 +17,7 @@ base_research = {
 	        UpgradeName =			"BUILDSPEED",
         	UpgradeValue =			1.3,
 		Icon = Icon_Build,
-		ShortDisplayedName = "$7240",
+		ShortDisplayedName = 	"Flagship Prod. Speed",
 	},
 
 	{
@@ -27,7 +27,7 @@ base_research = {
 		RequireTag = 			"VaygrBuilder",  
 		Cost = 				2500,
 		Time = 				100,
-		DisplayedName =			"$7820",
+		DisplayedName =			"Carrier Production Speed",
 		DisplayPriority =			65,
 		Description =			"$7821",
 		UpgradeType =			Modifier,
@@ -36,7 +36,7 @@ base_research = {
 	        UpgradeName =			"BUILDSPEED",
         	UpgradeValue =			1.3,
 		Icon = Icon_Build,
-		ShortDisplayedName = "$7240",
+		ShortDisplayedName = "Carrier Prod. Speed",
 	},
 
 	{
@@ -48,14 +48,14 @@ base_research = {
 		Time = 				95,
 		DisplayedName =			"$7825",
 		DisplayPriority =		65,
-		Description =			"$7826",
+		Description =			"Shipyard Production Speed",
 		UpgradeType =			Modifier,
 		TargetType =			Ship,
 		TargetName =			"Vgr_ShipYard",
 	        UpgradeName =			"BUILDSPEED",
         	UpgradeValue =			1.3,
 		Icon = Icon_Build,
-		ShortDisplayedName = "$7240",
+		ShortDisplayedName = "Shipyard Prod. Speed",
 	},
 
 }

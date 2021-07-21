@@ -45,14 +45,14 @@ base_research = {
 		Time = 				40,
 		DisplayedName =			"$7810",
 		DisplayPriority =			1204,
-		Description =			"$7811",
+		Description =			"Shipyard Production Speed",
 		UpgradeType =			Modifier,
 		TargetType =			Ship,
 		TargetName =			"Hgn_Shipyard",
 	        UpgradeName =			"BUILDSPEED",
         	UpgradeValue =			1.3,
 		Icon = 				Icon_Build,
-		ShortDisplayedName = 		"$7240",
+		ShortDisplayedName = 		"Shipyard Prod. Speed",
 	},
 
 }
