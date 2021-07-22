@@ -14,9 +14,12 @@ if (modkit.compose == nil) then
 		self._ship[type] = proto;
 	end
 
-	function compose:instantiate(type_group, player, id)
+	-- this function is the one which constructs ships out of prototypes
+	-- it runs every time a new ship is created!
+	function compose:instantiate(type_group, player_index, id)
 		local out_ship = {};
 
+		-- append custom proto to the base ones:
 		local source = modkit.table:merge(
 			self._base,
 			{
@@ -24,12 +27,14 @@ if (modkit.compose == nil) then
 			}
 		);
 
+		-- now merge these prototypes together by layering them
+		-- the result is the ship object we want
 		for _, proto in source do
 			for k, prop in proto do
 				if (k == "attribs") then
 					local result = {};
 					if (type(prop) == "function") then -- resolve attribs if fn
-						result = prop(type_group, player, id);
+						result = prop(type_group, player_index, id);
 					else
 						result = prop;
 					end
@@ -42,10 +47,6 @@ if (modkit.compose == nil) then
 				end
 			end
 		end
-
-		print("out:");
-		modkit.table.printTbl(out_ship);
-		print("/out");
 
 		return out_ship;
 	end
