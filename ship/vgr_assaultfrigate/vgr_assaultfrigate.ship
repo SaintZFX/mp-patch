@@ -182,3 +182,6 @@ NewShipType.explosiveDamageOnDeath=50
 NewShipType.radiusDamageEvadeMod=1.1											 
 NewShipType.hideNormalAttackUICooldown=1
 NewShipType.canSurround=1
+
+
+addCustomCode(NewShipType, "data:scripts/driver.lua", "load", "create", "update", "destroy", "vgr_assaultfrigate", 1);

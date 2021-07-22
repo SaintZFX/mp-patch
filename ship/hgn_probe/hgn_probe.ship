@@ -138,3 +138,6 @@ NewShipType.maxFalloffForce=15*10
 NewShipType.explosiveDamageOnDeath=27
 
 
+
+
+addCustomCode(NewShipType, "data:scripts/driver.lua", "load", "create", "update", "destroy", "hgn_probe", 1);

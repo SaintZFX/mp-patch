@@ -199,3 +199,6 @@ NewShipType.maxFalloffForce=500*10
 NewShipType.explosiveDamageOnDeath=394												 
 NewShipType.hideNormalAttackUICooldown=1
 NewShipType.canSurround=1
+
+
+addCustomCode(NewShipType, "data:scripts/driver.lua", "load", "create", "update", "destroy", "tai_carrier", 1);

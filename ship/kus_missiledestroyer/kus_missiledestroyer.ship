@@ -197,3 +197,6 @@ NewShipType.maxFalloffForce=500*10
 NewShipType.explosiveDamageOnDeath=312														 
 NewShipType.hideNormalAttackUICooldown=1
 NewShipType.canSurround=1
+
+
+addCustomCode(NewShipType, "data:scripts/driver.lua", "load", "create", "update", "destroy", "kus_missiledestroyer", 1);

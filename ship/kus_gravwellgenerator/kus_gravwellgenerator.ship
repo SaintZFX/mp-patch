@@ -163,3 +163,6 @@ NewShipType.explosiveDamageOnDeath=135
 NewShipType.radiusDamageEvadeMod=1.1													 
 NewShipType.hideNormalAttackUICooldown=1
 
+
+
+addCustomCode(NewShipType, "data:scripts/driver.lua", "load", "create", "update", "destroy", "kus_gravwellgenerator", 1);

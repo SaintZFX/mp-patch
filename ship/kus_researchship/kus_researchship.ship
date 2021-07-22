@@ -152,3 +152,6 @@ loadShipPatchList(NewShipType,"data:sound/sfx/ship/Hiigaran/NonMilitary/",0,"Eng
 NewShipType.minFalloffDamageDist=0
 NewShipType.maxFalloffDamageDist=400
 NewShipType.maxFalloffDamage=400
+
+
+addCustomCode(NewShipType, "data:scripts/driver.lua", "load", "create", "update", "destroy", "kus_researchship", 1);

@@ -171,3 +171,6 @@ NewShipType.explosiveScuttleDamageOnDeath=675
 NewShipType.maxFalloffForce=500*10
 NewShipType.explosiveDamageOnDeath=135
 NewShipType.radiusDamageEvadeMod=1.1	
+
+
+addCustomCode(NewShipType, "data:scripts/driver.lua", "load", "create", "update", "destroy", "kus_cloakgenerator", 1);
