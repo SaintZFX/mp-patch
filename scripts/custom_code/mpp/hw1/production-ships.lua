@@ -32,11 +32,14 @@ function generic_proto:ensureSingleResShipQueued()
 			res_ship_name = res_ship_name .. "_" .. i;
 		end
 		-- if we are building this res ship, other ships should be restricted from building it:
+		local self_is_building = self:isBuilding(res_ship_name);
 		for _, ship in our_builders do
-			if (self:isBuilding(res_ship_name) == 1) then -- always passes???
-				SobGroup_RestrictBuildOption(ship.own_group, res_ship_name);
-			else
-				SobGroup_UnRestrictBuildOption(ship.own_group, res_ship_name);
+			if (ship.id ~= self.id) then
+				if (self_is_building == 1) then
+					SobGroup_RestrictBuildOption(ship.own_group, res_ship_name);
+				else
+					SobGroup_UnRestrictBuildOption(ship.own_group, res_ship_name);
+				end
 			end
 		end
 	end
