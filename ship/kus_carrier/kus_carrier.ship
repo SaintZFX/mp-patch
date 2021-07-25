@@ -155,7 +155,6 @@ addAbility(NewShipType,"CanBeSalvageCaptured",0,1,0,0,1,"SalCap");
 addAbility(NewShipType,"CanBeRepaired","RepCap");
 addAbility(NewShipType,"RetireAbility",1,0);
 NewShipType.noCombatGrouping=1
-addCustomCode(NewShipType,"data:Ship/Kus_Carrier/Kus_Carrier.lua","Load_Kus_Carrier","Create_Kus_Carrier","Update_Kus_Carrier","","Kus_Carrier",2)
 LoadModel(NewShipType,1);
 StartShipWeaponConfig(NewShipType,"HW1_MothershipGun2","Weapon_Gun0","Weapon_Gun0");
 StartShipWeaponConfig(NewShipType,"HW1_MothershipGun2","Weapon_Gun1","Weapon_Gun1");
@@ -200,5 +199,6 @@ NewShipType.explosiveDamageOnDeath=394
 NewShipType.hideNormalAttackUICooldown=1
 NewShipType.canSurround=1
 
+-- addCustomCode(NewShipType,"data:Ship/Kus_Carrier/Kus_Carrier.lua","Load_Kus_Carrier","Create_Kus_Carrier","Update_Kus_Carrier","","Kus_Carrier",2)
 
 addCustomCode(NewShipType, "data:scripts/driver.lua", "load", "create", "update", "destroy", "kus_carrier", 1);
