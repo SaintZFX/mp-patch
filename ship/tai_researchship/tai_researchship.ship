@@ -132,7 +132,6 @@ addAbility(NewShipType,"WaypointMove");
 addAbility(NewShipType,"GuardCommand",1,3000,500);
 addAbility(NewShipType,"CanBeRepaired");
 addAbility(NewShipType,"RetireAbility",0,0);
-addCustomCode(NewShipType,"data:Ship/Tai_ResearchShip/Tai_ResearchShip.lua","Load_Tai_ResearchShip","Create_Tai_ResearchShip","Update_Tai_ResearchShip","Destroy_Tai_ResearchShip","tai_researchship",2.2)
 LoadModel(NewShipType,1);
 addShield(NewShipType,"EMP",220,20);
 StartShipHardPointConfig(NewShipType,"Research Module","ResearchShip","System","Innate","Damageable","HW1_ResearchModule","","","","","","","","");
@@ -152,5 +151,6 @@ NewShipType.minFalloffDamageDist=0
 NewShipType.maxFalloffDamageDist=400
 NewShipType.maxFalloffDamage=400
 
+-- addCustomCode(NewShipType,"data:Ship/Tai_ResearchShip/Tai_ResearchShip.lua","Load_Tai_ResearchShip","Create_Tai_ResearchShip","Update_Tai_ResearchShip","Destroy_Tai_ResearchShip","tai_researchship",2.2)
 
-addCustomCode(NewShipType, "data:scripts/driver.lua", "load", "create", "update", "destroy", "tai_researchship", 1);
+addCustomCode(NewShipType, "data:scripts/driver.lua", "load_tai_res_ship", "create", "update", "destroy", "tai_researchship", 1);
