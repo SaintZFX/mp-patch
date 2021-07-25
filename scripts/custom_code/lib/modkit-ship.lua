@@ -32,6 +32,10 @@ function modkit_ship:speed(speed)
 	return SobGroup_GetSpeed(self.own_group);
 end
 
+function modkit_ship:actualSpeed()
+	return SobGroup_GetActualSpeed(self.own_group);
+end
+
 function modkit_ship:position(pos)
 	if (pos) then
 		SobGroup_SetPosition(self.own_group, pos);
@@ -135,6 +139,10 @@ function modkit_ship:dock(target, stay_docked)
 	else
 		SobGroup_DockSobGroup(self.own_group, target.own_group);
 	end
+end
+
+function modkit_ship:race()
+	return strsub(self.type_group, 0, 3);
 end
 
 -- === Attack family queries ===
@@ -267,7 +275,20 @@ end
 modkit.ship_types.research_ships = res_ship_types;
 
 function modkit_ship:isResearchShip()
-	return self:isAnyTypeOf(self.ship_types.research_ships);
+	return self:isAnyTypeOf({
+		"kus_researchship",
+		"kus_researchship_1",
+		"kus_researchship_2",
+		"kus_researchship_3",
+		"kus_researchship_4",
+		"kus_researchship_5",
+		"tai_researchship",
+		"tai_researchship_1",
+		"tai_researchship_2",
+		"tai_researchship_3",
+		"tai_researchship_4",
+		"tai_researchship_5"
+	});
 end
 
 -- === State queries ===
@@ -315,12 +336,20 @@ function modkit_ship:canHyperspaceViaGate(enable)
 	return self:canDoAbility(AB_HyperspaceViaGate, enable);
 end
 
+function modkit_ship:canBuild(enable)
+	return self:canDoAbility(AB_Builder, enable);
+end
+
 function modkit_ship:isDoingAbility(ability)
 	return SobGroup_IsDoingAbility(self.own_group, ability);
 end
 
 function modkit_ship:isDocking()
 	return self:isDoingAbility(AB_Dock);
+end
+
+function modkit_ship:isBuilding(ship_type)
+	return SobGroup_IsBuilding(self.own_group, ship_type);
 end
 
 -- === FX stuff ===

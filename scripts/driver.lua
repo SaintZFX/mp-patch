@@ -48,7 +48,7 @@ if (H_DRIVER == nil) then
 
 	-- === load, create, update, destroy ===
 
-	function load(load)
+	function load()
 		return NOOP;
 	end
 	
