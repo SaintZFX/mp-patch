@@ -50,9 +50,7 @@ end
 
 function res_ships_proto:manageSubsHP()
 	local alive_ships = modkit.table.length(self:getOurResShips());
-	print("alive: " .. alive_ships);
 	local hp_to_add = max(0.1 * (alive_ships - 1), 0); -- `0.1 * (N - 1)` or `0`
-	print("hp to add: " .. hp_to_add); -- TOMORROW: FINISH THIS PART (HP ON MODULE), BUGTEST SPINNING, IMPLEMENT RESET IF DIED
 	self:subsHP("Research Module", 0.5 + hp_to_add);
 end
 
@@ -87,7 +85,6 @@ function res_ships_proto:setNextToBuild(ship_type, player)
 	else
 		self.next_to_build_index = modkit.table.length(self:getOurResShips());
 	end
-	print("next index: " .. self.next_to_build_index);
 	self:restrictAll(ship_type, player);
 	if (self.next_to_build_index == 6) then
 		return nil;
@@ -97,7 +94,6 @@ function res_ships_proto:setNextToBuild(ship_type, player)
 		suffix = "_" .. self.next_to_build_index;
 	end
 	ship_to_unrestrict = (ship_type or self.type_group) .. suffix;
-	print("unrestrict " .. ship_to_unrestrict);
 	player = player or self.player();
 	player:restrictBuildOption({ship_to_unrestrict}, 0);
 end
@@ -123,7 +119,6 @@ end
 
 function res_ships_proto:paradeIfAI()
 	if (self.player():isHuman() == nil) then
-		print("parade");
 		local target = GLOBAL_SHIPS:find( -- find a mothership, if that fails, find a carrier
 			function (ship)
 				return ship:isMothership();
