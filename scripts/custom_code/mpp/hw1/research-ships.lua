@@ -133,17 +133,17 @@ function res_ships_proto:paradeIfAI()
 end
 
 function res_ships_proto:spinIfComplete()
-	-- if we have all the ships
+	-- if we have all the ships, aren't already spinning, are kushan, and aren't moving:
 	if (self:race() == "kus" and self.spinning == 0 and self:dockedAuxHubCount() == 5 and self:actualSpeed() == 0) then
 		local res_ships = self:getOurResShips(); -- poll this on our normal tick rate, it won't change much nor does it need precision
-		-- every 60 seconds, call `SobGroup_SetMadState()` on all ships with "NIS00":
+		-- schedule every 60 seconds, call `SobGroup_SetMadState()` on all ships with "NIS00":
 		self.spin_start_event_id = modkit.scheduler:every(60 / modkit.scheduler.seconds_per_tick, function ()
 			for _, res_ship in %res_ships do
-				SobGroup_SetMadState(res_ship.own_group, "NIS00");
+				res_ship:madState("NIS00");
 			end
 		end);
 		self.spinning = 1;
-	elseif (self.spin_start_event_id ~= nil) then
+	elseif (self.spin_start_event_id ~= nil) then -- otherwise if we have a spin event scheduled, clear it
 		modkit.scheduler:clear(self.spin_start_event_id);
 		self.spin_start_event_id = nil;
 		self.spinning = 0;

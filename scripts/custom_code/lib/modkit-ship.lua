@@ -366,6 +366,10 @@ function modkit_ship:playEffect(name)
 	FX_PlayEffect(name, self.own_group, 1);
 end
 
+function modkit_ship:madState(animation_name)
+	SobGroup_SetMadState(self.own_group, animation_name);
+end
+
 -- === Spawning ===
 
 function modkit_ship:spawn(spawn, volume)
