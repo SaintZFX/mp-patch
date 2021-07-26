@@ -108,20 +108,36 @@ if (modkit.table == nil) then
 			return table;
 		end,
 		firstKey = function (tbl)
-			local lowest_k = getn(tbl); -- highest k
+			local lowest_k = modkit.table.length(tbl); -- highest k
 			for k, v in tbl do
 				if (k < lowest_k) then
 					lowest_k = k;
 				end
 			end
 			return lowest_k;
+		end,
+		any = function (tbl, predicate)
+			for k, v in tbl do
+				if (predicate(v, k, tbl)) then
+					return 1;
+				end
+			end
+			return nil;
+		end,
+		all = function (tbl, predicate)
+			for k, v in tbl do
+				if (predicate(v, k, tbl) == nil) then
+					return nil;
+				end
+			end
+			return 1;
 		end
 	};
 
 	function table.pack(tbl)
 		local out_tbl = {};
 		local index = 1;
-		for k, v in tbl do
+		for _, v in tbl do
 			out_tbl[index] = v;
 			index = index + 1;
 		end
@@ -146,7 +162,7 @@ if (modkit.table == nil) then
 	end
 
 	function table:merge(tbl_a, tbl_b, merger)
-		if (self == nil) then
+		if (self.merge == nil) then
 			print("\n[modkit] Error: table:merge must be called as a method (table:merge vs table.merge)");
 		end
 		merger = merger or function (a, b)

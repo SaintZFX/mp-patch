@@ -3,6 +3,7 @@
 
 if (modkit == nil) then modkit = {}; end
 if (modkit.MemGroup == nil) then dofilepath("data:scripts/modkit/memgroup.lua"); end
+if (GLOBAL_TEAMS == nil) then dofilepath("data:scripts/modkit/team.lua"); end
 
 if (modkit_player_proto == nil) then
 
@@ -107,13 +108,59 @@ if (modkit_player_proto == nil) then
 
 	-- === end of research stuff ===
 
-	-- Returns this player's team.
-	-- Note: the team numbers we record internally may not match those chosen in lobby.
-	-- Functionally, this won't matter.
+	--- Return `1` if this player is allied with the `other`. `0` otherwise.
+	---@param other table
+	---@return integer
+	function modkit_player_proto:alliedWith(other)
+		return self.id == other.id or AreAllied(self.id, other.id);
+	end
+
+	--- Returns the players team, which is a high level type just like players and ships.
+	--- When this function is called, if there is team containing this player or an ally of this player,
+	--- then a new team is created for it. If there is a team with only allies, this player is added to the team.
+	---@return table
 	function modkit_player_proto:team()
-		local team = GLOBAL_PLAYERS:filter(function (player)
-			return AreAllied(player.id, %self.id);
+		local team = GLOBAL_TEAMS:find(function (team)
+			local only_allies = 1;
+			local belongs_to_team = nil;
+			for _, player in team.players do
+				if (%self.id == player().id) then
+					only_allies = 0;
+					belongs_to_team = 1;
+					break;
+				elseif (%self:alliedWith(player())) then
+					belongs_to_team = 1; -- any non-nil return will pass
+				end
+			end
+			if (only_allies) then -- we need to add this player to this team
+				local outer_self = %self; -- lua :)
+				team.players = modkit.table:merge(
+					team.players,
+					{
+						[%self.id] = function ()
+							return %outer_self;
+						end
+					}
+				)
+			end
+			return belongs_to_team;
 		end);
+
+		-- undiscovered team, add it
+		if (team == nil) then
+			team = GLOBAL_TEAMS:set(GLOBAL_TEAMS:length() + 1, modkit.table:merge(
+				modkit_teams_proto,
+				{
+					players = {
+						[self.id] = function ()
+							return %self;
+						end
+					}
+				}
+			))
+		end
+
+		return team;
 	end
 
 	--- Kills this player.

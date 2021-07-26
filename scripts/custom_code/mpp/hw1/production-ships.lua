@@ -1,6 +1,11 @@
-local generic_proto = {};
+--- Production ships generic stuff for both ms and carriers
+---@class ProductionBaseProto : Ship
+local base_prodship_proto = {};
 
-function generic_proto:showProductionSubsystems()
+--- Causes innate production subsystems to appear (`subsystem/hw1_production_*`) on all the player's production ships
+--- when the player researches key technologies.
+--- New ships will also have these systems present.
+function base_prodship_proto:showProductionSubsystems()
 	local tech_subs = {
 		DefenderSubSystems = "FighterProduction",
 		CorvetteDrive = "CorvetteProduction",
@@ -20,7 +25,8 @@ function generic_proto:showProductionSubsystems()
 	end
 end
 
-function generic_proto:ensureSingleResShipQueued()
+--- Ensures that only one production ship is building the next research ship.
+function base_prodship_proto:ensureSingleResShipQueued()
 	-- predicate function
 	local isOurBuilder = function (ship)
 		return (ship:player().id == %self.player().id) and ship:canBuild() and ship.id ~= %self.id;
@@ -47,8 +53,10 @@ end
 
 -- ===
 
+--- MS only stuff
+---@class MothershipProto : ProductionBaseProto
 local motherships_proto = {};
-for k, v in generic_proto do
+for k, v in base_prodship_proto do
 	motherships_proto[k] = v;
 end
 
@@ -85,8 +93,10 @@ modkit.compose:addShipProto("tai_mothership", motherships_proto);
 
 -- ===
 
+--- Carrier only stuff
+---@class CarrierProto : ProductionBaseProto
 local carriers_proto = {};
-for k, v in generic_proto do
+for k, v in base_prodship_proto do
 	carriers_proto[k] = v;
 end
 

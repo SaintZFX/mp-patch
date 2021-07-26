@@ -1,3 +1,5 @@
+--- Proto for res ships for both tai and kus (only for res ship 0, which drives the others).
+---@class ResShipProto : Ship
 res_ships_proto = {
 	next_to_build_index = 0,
 	spinning = 0,

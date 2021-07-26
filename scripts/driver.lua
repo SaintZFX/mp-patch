@@ -12,6 +12,16 @@ if (H_DRIVER == nil) then
 
 	GLOBAL_SHIPS = modkit.MemGroup.Create("mg-ships-global");
 
+	function GLOBAL_SHIPS:allied(caller)
+		local allied_ships = {};
+		for index, ship in self:all() do
+			if (ship:alliedWith(caller)) then
+				allied_ships[index] = ship;
+			end
+		end
+		return allied_ships;
+	end
+
 	--- Registers the incoming sobgroup, player index, and ship id into a Ship table within the global registry.
 	-- The Ship is a rich representation of the actual ingame ship as a proper workable table.
 	function register(type_group, player_index, ship_id)

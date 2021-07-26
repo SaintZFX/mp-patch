@@ -1,7 +1,28 @@
 dofilepath("data:scripts/modkit/player.lua"); -- stuff for players like GLOBAL_PLAYERS
 dofilepath("data:scripts/modkit/research.lua"); -- research...
 
+---@class Vec3
+---@field [1] number
+---@field [2] number
+---@field [3] number
+
+---@class Position : Vec3
+
+---@class Attribs
+---@field id integer
+---@field type_group string,
+---@field own_group string
+---@field player table todo doc Player proto
+---@field _tick integer
+---@field created_at number
+
+---@class Base : Attribs
 modkit_base = {
+	--- Attribs callback allows modders to define data on ships which depends on their initialisation values.
+	---@param g string
+	---@param p integer
+	---@param s integer
+	---@return Attribs
 	attribs = function (g, p, s)
 		local player = function ()
 			return
@@ -24,6 +45,7 @@ modkit_base = {
 		};
 	end
 };
+
 
 function modkit_base:tick(set)
 	if (set and type(set) == "number") then

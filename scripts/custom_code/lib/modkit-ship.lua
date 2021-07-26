@@ -1,5 +1,19 @@
+---@class ShipAttribs : Attribs
+---@field _stunned number
+---@field _ab_targets table
+---@field _current_dmg_mult number
+---@field _current_tumble Vec3
+---@field _despawned_at_volume string
+---@field _reposition_volume string
+---@field _default_vol string
+
+---@class Ship : Base, ShipAttribs
 modkit_ship = {
-	attribs = function (c, p, s)
+	---@param g string
+	---@param p integer
+	---@param s integer
+	---@return ShipAttribs
+	attribs = function (g, p, s)
 		return {
 			_stunned = 0,
 			_ab_targets = {},
@@ -36,6 +50,10 @@ function modkit_ship:actualSpeed()
 	return SobGroup_GetActualSpeed(self.own_group);
 end
 
+--- Returns the ship's current position (or the center position of the ship's batch squad).
+---
+---@param pos Position
+---@return Position
 function modkit_ship:position(pos)
 	if (pos) then
 		SobGroup_SetPosition(self.own_group, pos);
@@ -82,7 +100,6 @@ function modkit_ship:subsHP(subs_name, HP)
 	return SobGroup_GetHardPointHealth(self.own_group, subs_name);
 end
 
-
 function modkit_ship:distanceTo(other)
 	if (type(other.own_group) == "string") then -- assume ship
 		return SobGroup_GetDistanceToSobGroup(self.own_group, other.own_group);
@@ -94,6 +111,31 @@ function modkit_ship:distanceTo(other)
 			(b[2] - a[2]) ^ 2 +
 			(b[3] - a[3]) ^ 2
 		);
+	end
+end
+
+--- Returns the squad (batch) size of the ship, which may be a squadron.
+---
+---@return integer
+function modkit_ship:squadSize()
+	return SobGroup_Count(self.own_group);
+end
+
+function modkit_ship:buildCost()
+	return SobGroup_GetStaticF(self.type_group, "buildCost") / self:squadSize();
+end
+
+function modkit_ship:buildTime()
+	return SobGroup_GetStaticF(self.type_group, "buildTime");
+end
+
+-- === Commands ===
+
+function modkit_ship:customCommand(target)
+	if (target) then
+		return SobGroup_CustomCommandTargets(self.own_group);
+	else
+		return SobGroup_CustomCommand(self.own_group);
 	end
 end
 
@@ -141,6 +183,46 @@ function modkit_ship:dock(target, stay_docked)
 	end
 end
 
+--- Launches this ship from another ship, `from`. If `from` is not provided, this function will
+--- attempt to find the ship which `ship` is docked with.
+---
+---@param from? Ship
+---@return nil
+function modkit_ship:launchFrom(from)
+	if (from == nil) then -- need to discover which ship we're docked with
+		for _, ship in GLOBAL_SHIPS:all() do
+			if (ship.player():alliedWith(self.player())) then
+				if (self:docked(ship) == 1) then
+					from = ship;
+				end
+			end
+		end
+	else
+		return SobGroup_Launch(self.own_group, from.own_group);
+	end
+end
+
+--- Launches this ship from another ship, `docked`. This ship must be docked with `docked`, or nothing happens.
+--- If `docked` is not provided, this function attempts to find the ship which this ship is docked with.
+---
+---@param docked Ship
+---@return nil
+function modkit_ship:launch(docked)
+	if (docked == nil) then
+		for _, ship in GLOBAL_TEAMS:all() do
+			if (ship.player:alliedWith(self.player())) then
+				if (ship:docked(self) == 1) then
+					docked = ship;
+				end
+			end
+		end
+	end
+end
+
+--- Returns the 3-character race string of the ship.
+--- **Note: This is the host race of the _ship type_, as opposed to the player's race.**
+---
+---@return string
 function modkit_ship:race()
 	return strsub(self.type_group, 0, 3);
 end
@@ -261,19 +343,6 @@ function modkit_ship:isProbe()
 	});
 end
 
--- need to do this for above fns also...
-modkit.ship_types = {};
-
--- res ship types
-local res_ship_types = {};
-for _, race in { "kus", "tai" } do
-	res_ship_types[getn(res_ship_types) + 1] = race .. "_researchship";
-	for i = 1, 5 do
-		res_ship_types[getn(res_ship_types) + 1] = race .. "_researchship_" .. i;
-	end
-end
-modkit.ship_types.research_ships = res_ship_types;
-
 function modkit_ship:isResearchShip()
 	return self:isAnyTypeOf({
 		"kus_researchship",
@@ -291,6 +360,15 @@ function modkit_ship:isResearchShip()
 	});
 end
 
+function modkit_ship:isResourceCollector()
+	return self:isAnyTypeOf({
+		"hgn_resourcecollector",
+		"vgr_resourcecollector",
+		"kus_resourcecollector",
+		"tai_resourcecollector"
+	});
+end
+
 -- === State queries ===
 
 --- Get or set the stunned status of the ship.
@@ -303,6 +381,9 @@ function modkit_ship:stunned(stunned)
 	return self._stunned;
 end
 
+--- Returns whether or not this ship is docked with anything. Optionally, checks if this ship is docked with a specific ship.
+---@param with Ship
+---@return '0'|'1'
 function modkit_ship:docked(with)
 	if (with) then
 		return SobGroup_IsDockedSobGroup(self.own_group, with.own_group);
@@ -310,14 +391,35 @@ function modkit_ship:docked(with)
 	return SobGroup_IsDocked(self.own_group);
 end
 
+--- Returns 
+---@param target Ship
+---@return '1'|'nil'|Ship[]
 function modkit_ship:attacking(target)
 	local targets_group = SobGroup_Fresh("targets-group-" .. self.id .. "-" .. COMMAND_Attack);
 	SobGroup_GetCommandTargets(targets_group, self.own_group, COMMAND_Attack);
 	if (target) then
 		return SobGroup_GroupInGroup(target.own_group, targets_group) == 1;
 	else
-		return SobGroup_Count(targets_group) > 0;
+		local targets = {};
+		for _, ship in GLOBAL_SHIPS:all() do
+			if (self:attacking(ship)) then
+				targets[ship.id] = ship;
+			end
+		end
+		return targets;
 	end
+end
+
+function modkit_ship:beingCaptured()
+	return SobGroup_AnyBeingCaptured(self.own_group);
+end
+
+function modkit_ship:allInRealSpace()
+	return SobGroup_AreAllInRealSpace(self.own_group);
+end
+
+function modkit_ship:allInHyperSpace()
+	return SobGroup_AreAllInHyperspace(self.own_group);
 end
 
 -- === Ability stuff ===
@@ -340,8 +442,22 @@ function modkit_ship:canBuild(enable)
 	return self:canDoAbility(AB_Builder, enable);
 end
 
+--- Returns `1` is this ship is performing `ability` (one of the `AB_` global ability codes).
+---
+---@param ability integer
+---@return '0'|'1'
 function modkit_ship:isDoingAbility(ability)
 	return SobGroup_IsDoingAbility(self.own_group, ability);
+end
+
+--- Returns `1` if this ship is performing any ability in `abilities`, else `0`.
+---
+---@param abilities table
+---@return '0'|'1'
+function modkit_ship:isDoingAnyAbilities(abilities)
+	return modkit.table.any(abilities, function (ability)
+		return %self:isDoingAbility(ability) == 1;
+	end) or 0;
 end
 
 function modkit_ship:isDocking()
@@ -372,23 +488,55 @@ end
 
 -- === Spawning ===
 
+--- Causes this previously despawned ship to respawn at the last place it despawned, unless a new volume is given.
+--- You can pass a position instead of a volume, in which case a new volume is created at that position.
+--- Returns the name of the despawn volume 
+---
+---@param spawn integer
+---@param volume? string | table
+---@return string
 function modkit_ship:spawn(spawn, volume)
+	volume = volume or self._despawned_at_volume;
+	if (type(volume) == "table") then -- if 'volume' is a {x, y, z} position
+		volume = Volume_Fresh(self._despawned_at_volume, volume); -- create a volume from it
+	end
 	if (spawn == 1) then
-		SobGroup_Spawn(self.own_group, self._despawned_at_volume);
+		SobGroup_Spawn(self.own_group, volume);
 		Volume_Delete(self._despawned_at_volume);
 	elseif (spawn == 0) then
-		Volume_AddSphere(self._despawned_at_volume, self:position(), 1);
+		self._despawned_at_volume = Volume_Fresh(volume, self:position());
 		SobGroup_Despawn(self.own_group);
 	end
+	return self._despawned_at_volume;
 end
 
+--- Spawns a new ship at `position`
+---@param type any
+---@param position? any
+---@param spawn_group? string
+---@return string
 function modkit_ship:spawnShip(type, position, spawn_group)
 	position = position or self:position();
-	local volume_name = "spawner-vol-" .. self.id;
-	local spawn_group = spawn_group or SobGroup_Fresh("spawner-group-" .. self.id);
-	Volume_AddSphere(volume_name, position, 0);
+	spawn_group = spawn_group or SobGroup_Fresh("spawner-group-" .. self.id);
+	local volume_name = Volume_Fresh("spawner-vol-" .. self.id, position);
 	SobGroup_SpawnNewShipInSobGroup(self.player().id, type, "-", spawn_group, volume_name);
 	Volume_Delete(volume_name);
+	return spawn_group;
+end
+
+--- Causes this ship to produce a new ship of the given `type`, if it can do so.
+--- The created ship is available through a temporary group (`spawn_group`).
+--- **Note: The temporary group returned should be functionally equivalent to `own_group` of a more typically
+--- available ship, but is _not_ the same group (it should only contain the same ships).**
+---
+---@param type string
+---@param spawn_group? string
+---@return string
+function modkit_ship:produceShip(type, spawn_group)
+	spawn_group = spawn_group or SobGroup_Fresh("spawner-group-" .. self.id);
+	local mixed = SobGroup_Fresh(self.own_group .. "-temp-spawner-group");
+	SobGroup_Create(mixed, type);
+	SobGroup_FillSubstract(spawn_group, mixed, self.own_group);
 	return spawn_group;
 end
 
