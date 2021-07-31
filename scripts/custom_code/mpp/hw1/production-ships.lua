@@ -12,6 +12,7 @@ local base_prodship_proto = {
 --- New ships will also have these systems present.
 function base_prodship_proto:showProductionSubsystems()
 	local tech_subs = {
+		FighterChassis = "FighterProduction",
 		DefenderSubSystems = "FighterProduction",
 		CorvetteDrive = "CorvetteProduction",
 		CapitalShipDrive = "FrigateProduction",
