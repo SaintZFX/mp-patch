@@ -1,6 +1,11 @@
 --- Production ships generic stuff for both ms and carriers
 ---@class ProductionBaseProto : Ship
-local base_prodship_proto = {};
+---@field single_ship_queue_event_id nil|integer
+local base_prodship_proto = {
+
+	single_ship_queue_event_id = nil,
+	test = 0
+};
 
 --- Causes innate production subsystems to appear (`subsystem/hw1_production_*`) on all the player's production ships
 --- when the player researches key technologies.
@@ -27,24 +32,28 @@ end
 
 --- Ensures that only one production ship is building the next research ship.
 function base_prodship_proto:ensureSingleResShipQueued()
-	-- predicate function
-	local isOurBuilder = function (ship)
-		return (ship:player().id == %self.player().id) and ship:canBuild() and ship.id ~= %self.id;
-	end
-	local our_builders = GLOBAL_SHIPS:filter(isOurBuilder); -- all our build capable ships
-	for i = 0, 5, 1 do
-		res_ship_name = self:race() .. "_researchship"; -- kus_researchship, tai_researchship
-		if (i > 0) then
-			res_ship_name = res_ship_name .. "_" .. i;
+	if (self.single_ship_queue_event_id == nil) then
+		-- predicate function
+		local isOurBuilder = function (ship)
+			return (ship:player().id == %self.player().id) and ship:canBuild() and ship.id ~= %self.id;
 		end
-		-- if we are building this res ship, other ships should be restricted from building it:
-		local self_is_building = self:isBuilding(res_ship_name);
-		for _, ship in our_builders do
-			if (ship.id ~= self.id) then
-				if (self_is_building == 1) then
-					SobGroup_RestrictBuildOption(ship.own_group, res_ship_name);
-				else
-					SobGroup_UnRestrictBuildOption(ship.own_group, res_ship_name);
+		modkit.scheduler:every(500, function ()
+		end);
+		local our_builders = GLOBAL_SHIPS:filter(isOurBuilder); -- all our build capable ships
+		for i = 0, 5, 1 do
+			res_ship_name = self:race() .. "_researchship"; -- kus_researchship, tai_researchship
+			if (i > 0) then
+				res_ship_name = res_ship_name .. "_" .. i;
+			end
+			-- if we are building this res ship, other ships should be restricted from building it:
+			local self_is_building = self:isBuilding(res_ship_name);
+			for _, ship in our_builders do
+				if (ship.id ~= self.id) then
+					if (self_is_building == 1) then
+						SobGroup_RestrictBuildOption(ship.own_group, res_ship_name);
+					else
+						SobGroup_UnRestrictBuildOption(ship.own_group, res_ship_name);
+					end
 				end
 			end
 		end

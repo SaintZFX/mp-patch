@@ -13,6 +13,7 @@ if (H_SCHEDULER == nil) then
 		tick = 0,
 		seconds_per_tick = 0.1, -- lowest is 0.05, presumably
 		scheduled_events = {}, -- table with signature: { fn: function, data: integer }
+		one_off_events = {},
 		longest_scheduled = 1, -- to stop `tick` overflowing we wrap when it reaches the most infrequent events tick interval
 		new_event_index = 1 -- used to provide new events with an index (increment)
 	};
@@ -21,9 +22,13 @@ if (H_SCHEDULER == nil) then
 	---
 	---@return nil
 	function scheduler:update()
+		-- one-off events scheduled for this tick:
+		local this_tick_one_off_events = self.one_off_events[self.tick] or {};
+		for _, event in this_tick_one_off_events do
+			event:fn();
+		end
 		for interval, events in self.scheduled_events do
 			if (mod(self.tick, interval) == 0) then -- if interval is a factor of the current tick
-				print("pass!");
 				for _, event in events do -- fire the events bound to that index
 					event:fn(); -- event's callback has the event passed
 				end
@@ -39,34 +44,48 @@ if (H_SCHEDULER == nil) then
 	---
 	---@param interval integer
 	---@param fn function
+	---@param offset integer
 	---@param data table
 	---@return integer
-	function scheduler:every(interval, fn, data)
+	function scheduler:every(interval, fn, offset, data)
 		if (interval == nil or fn == nil) then
 			print("[modkit]: `every` call requires both an interval and a callback function to work.");
 			return nil;
 		end
-		if (self.scheduled_events[interval] == nil) then
-			self.scheduled_events[interval] = {};
-		end
+		
 		-- make a new event:
 		local new_event = {
 			id = self.new_event_index, -- id = position in array (once we push it in)
 			data = data,
 		};
 		self.new_event_index = self.new_event_index + 1;
+		local outer_self = self;
 		function new_event:fn() -- passed fn will have this event table passed to it
-			%fn({
-				id = %new_event.id,
-				data = %new_event.data
-			}); -- avoid passing `fn`
+			if (%offset) then
+				local outer_event = self;
+				local outer_callback = %fn;
+				%outer_self:once(function ()
+					%outer_callback({
+						id = %outer_event.id,
+						data = %outer_event.data
+					}); -- avoid passing `fn`
+				end, %offset);
+			else
+				%fn({
+					id = %new_event.id,
+					data = %new_event.data
+				}); -- avoid passing `fn`
+			end
 		end
 		-- add it to the array
-		print("ok add it");
+		if (self.scheduled_events[interval] == nil) then
+			self.scheduled_events[interval] = {};
+		end
 		self.scheduled_events[interval][new_event.id] = new_event;
 		if (self.longest_scheduled < interval) then -- if this interval is longer than our record, update it to match
 			self.longest_scheduled = interval;
 		end
+
 		return new_event.id;
 	end
 
@@ -84,6 +103,31 @@ if (H_SCHEDULER == nil) then
 					end
 				end
 			end
+		end
+	end
+
+	function scheduler:once(fn, initial_delay, data)
+		if (initial_delay) then
+			local new_event = {
+				id = self.new_event_index,
+				data = data
+			};
+			self.new_event_index = self.new_event_index + 1;
+
+			local outer_self = self;
+			function new_event:fn()
+				%fn({
+					id = %new_event.id,
+					data = %new_event.data
+				});
+				%outer_self.one_off_events[%outer_self.tick][%new_event.id] = nil; -- self clear
+			end
+
+			if (self.one_off_events[self.tick + initial_delay] == nil) then
+				self.one_off_events[self.tick + initial_delay] = {};
+			end
+			self.one_off_events[self.tick + initial_delay][new_event.id] = new_event;
+			modkit.table.printTbl(self.one_off_events);
 		end
 	end
 

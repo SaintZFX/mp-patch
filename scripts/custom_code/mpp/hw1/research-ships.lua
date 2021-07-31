@@ -1,9 +1,18 @@
+---@class ResShipAttribs
+---@field next_to_build_index integer
+---@field spinning '0'|'1'
+---@field spin_start_event_id 'nil'|integer
+
 --- Proto for res ships for both tai and kus (only for res ship 0, which drives the others).
----@class ResShipProto : Ship
+---@class ResShipProto : Ship, AIParader
 res_ships_proto = {
-	next_to_build_index = 0,
-	spinning = 0,
-	spin_start_event_id = nil,
+	attribs = function ()
+		return {
+			next_to_build_index = 0,
+			spinning = 0,
+			spin_start_event_id = nil,
+		};
+	end
 };
 
 -- ==== hooks ====
@@ -15,7 +24,6 @@ end
 
 function res_ships_proto:update()
 	self:setNextToBuild(); -- set all restricted except the next to build
-	self:paradeIfAI();
 	self:dockAnyUndocked();
 	self:manageSubsHP();
 	self:manageEngineGlow();
@@ -32,14 +40,6 @@ function res_ships_proto:destroy()
 end
 
 -- ==== custom methods ====
-
--- restrict all not-next ships [x]
--- dock loose aux hubs [x]
--- parade the ship if ai [x]
--- spin when 6 [ ]
--- only ship 0 should have engine glow [x]
--- disable glow when have docked hubs [x]
--- die all if primary dies [ ]
 
 function res_ships_proto:manageEngineGlow()
 	local docked = self:dockedAuxHubCount();
@@ -119,24 +119,28 @@ function res_ships_proto:dockedAuxHubCount()
 	);
 end
 
-function res_ships_proto:paradeIfAI()
-	if (self.player():isHuman() == nil) then
-		local target = GLOBAL_SHIPS:find( -- find a mothership, if that fails, find a carrier
-			function (ship)
-				return ship:isMothership();
-			end
-		) or GLOBAL_SHIPS:find(
-			function (ship)
-				return ship:isCarrier();
-			end
-		);
-		self:parade(target);
-	end
-end
+-- function res_ships_proto:paradeIfAI()
+-- 	if (self.player():isHuman() == nil) then
+-- 		local target = GLOBAL_SHIPS:find( -- find a mothership, if that fails, find a carrier
+-- 			function (ship)
+-- 				return ship.player().id == %self.player().id and ship:isMothership();
+-- 			end
+-- 		) or GLOBAL_SHIPS:find(
+-- 			function (ship)
+-- 				return ship.player().id == %self.player().id and ship:isCarrier();
+-- 			end
+-- 		);
+-- 		if (target) then
+-- 			self:parade(target);
+-- 		end
+-- 	end
+-- end
 
+---@deprecated MAD animation looks ass from far away
+--- Spins kushan research ships when they form a complete ring.
 function res_ships_proto:spinIfComplete()
 	-- if we have all the ships, aren't already spinning, are kushan, and aren't moving:
-	if (self:race() == "kus" and self.spinning == 0 and self:dockedAuxHubCount() == 5 and self:actualSpeed() == 0) then
+	if (self:race() == "kus" and self.spinning == 0 and self:dockedAuxHubCount() == 5 and self:actualSpeedSq() == 0) then
 		local res_ships = self:getOurResShips(); -- poll this on our normal tick rate, it won't change much nor does it need precision
 		-- schedule every 60 seconds, call `SobGroup_SetMadState()` on all ships with "NIS00":
 		self.spin_start_event_id = modkit.scheduler:every(60 / modkit.scheduler.seconds_per_tick, function ()
