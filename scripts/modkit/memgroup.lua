@@ -68,9 +68,11 @@ if (modkit.MemGroup == nil) then
 			function new_group:find(predicate)
 				return modkit.table.find(self._entities, predicate);
 			end
+			---@return table
 			function new_group:filter(predicate)
 				return modkit.table.filter(self._entities, predicate);
 			end
+			---@return integer
 			function new_group:length()
 				return modkit.table.length(self._entities);
 			end

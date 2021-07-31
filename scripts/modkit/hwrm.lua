@@ -3,6 +3,9 @@
 -- We can 'redefine' globals by first cloning the global table, then redefining actual globals as annotated wrappers around their originals.
 
 if (nil) then
+
+	---@alias bool '1'|'nil'
+
 	AB_None = 0;
 	AB_Move = 1;
 	AB_Attack = 2;
@@ -35,6 +38,33 @@ if (nil) then
 	AB_Lights = 29;
 	AB_Custom = 31;
 
+	COMMAND_Idle = 0;
+	COMMAND_Move = 1;
+	COMMAND_Attack = 2;
+	COMMAND_Build = 3;
+	COMMAND_Dock = 4;
+	COMMAND_Resource = 5;
+	COMMAND_Launch = 6;
+	COMMAND_WaypointMove = 7;
+	-- ...todo
+
+	OffensiveROE = 0;
+	DefensiveROE = 1;
+	PassiveROE = 2;
+
+	---@alias ROE 'OffensiveROE'|'DefensiveROE'|'PassiveROE'
+
+	AggressiveStance = 0;
+	NeutralStance = 1;
+	EvasiveStance = 2;
+
+	---@alias Stance 'AggressiveStance'|'NeutralStance'|'EvasiveStance'
+
+	ShipHoldLaunch = 0;
+	ShipHoldStayDockedUpToLimit = 1;
+	ShipHoldStayDockedAlways = 2;
+
+	---@alias AutoLaunchStatus 'ShipHoldLaunch'|'ShipHoldStayDockedUpToLimit'|'ShipHoldStayDockedAlways'
 
 	---@param str string
 	---@param start number

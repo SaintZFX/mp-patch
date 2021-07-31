@@ -73,8 +73,14 @@ if (modkit.table == nil) then
 		end,
 		find = function (table, predicate)
 			for i, v in table do
-				if (predicate(v, i, table) ~= nil) then
-					return v;
+				if (type(predicate) == "function") then
+					if (predicate(v, i, table) ~= nil) then
+						return v;
+					end
+				else
+					if (v == predicate) then
+						return v;
+					end
 				end
 			end
 		end,
@@ -104,7 +110,7 @@ if (modkit.table == nil) then
 			return values;
 		end,
 		push = function (table, value)
-			table[getn(table) + 1] = value;
+			table[modkit.table.length(table) + 1] = value;
 			return table;
 		end,
 		firstKey = function (tbl)

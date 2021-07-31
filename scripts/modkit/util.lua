@@ -1,6 +1,6 @@
 --- Adds all the ships in `ships` to a new sobgroup `group_name`.
 ---@param group_name string
----@param ships table
+---@param ships Ship[]
 ---@return string
 function SobGroup_FromShips(group_name, ships)
 	local new_group = SobGroup_Fresh(group_name);

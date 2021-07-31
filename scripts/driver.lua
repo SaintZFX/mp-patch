@@ -33,7 +33,7 @@ if (H_DRIVER == nil) then
 		-- Create a new Ship. The attributes and methods this ship has are a combination of any global attributes in
 		-- `custom_code/global_attribs.lua`, combined with the custom attributes and methods you defined for this _type_ of ship,
 		-- somewhere in `custom_code/<race>/<custom-ship>.lua`.
-		local caller = GLOBAL_SHIPS:set(
+		caller = GLOBAL_SHIPS:set(
 			ship_id,
 			modkit.compose:instantiate(type_group, player_index, ship_id)
 		);
@@ -61,6 +61,9 @@ if (H_DRIVER == nil) then
 	function load()
 		return NOOP;
 	end
+
+	GLOBAL_SHIPS.cache = GLOBAL_SHIPS.cache or {};
+	GLOBAL_SHIPS.cache.newly_created = GLOBAL_SHIPS.cache.newly_created or {};
 	
 	function create(g, p, i)
 		local caller = register(g, p, i);
@@ -80,9 +83,17 @@ if (H_DRIVER == nil) then
 		caller:tick(caller:tick() + 1);
 
 		caller:update(); -- run the caller's custom update hook
+		if (caller.afterUpdate) then
+			caller:afterUpdate();
+		end
 
 		for k, v in caller.auto_exec do
 			v(caller, k);
+		end
+
+		if (caller:tick() == 1) then
+			-- now the ship is definitely ready
+			GLOBAL_SHIPS.cache.newly_created[i] = caller;
 		end
 
 		return caller;

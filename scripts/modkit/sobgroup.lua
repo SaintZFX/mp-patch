@@ -133,6 +133,13 @@ if (H_SOBGROUP ~= 1) then
 		AB_Steering,
 		AB_Targeting,
 		AB_Lights,
+		AB_Move,
+		AB_Mine,
+		AB_Custom,
+		AB_Dock,
+		AB_Parade,
+		AB_Retire,
+		AB_Repair
 	}
 	STUN_EFFECT_EVENT = "PowerOff"
 

@@ -10,6 +10,10 @@ if (modkit_player_proto == nil) then
 	-- global memgroup for players
 	GLOBAL_PLAYERS = modkit.MemGroup.Create("mg-players-global");
 
+	-- Note that the `id` field is only set later when the player is actually constructed later
+
+	---@class Player
+	---@field id integer
 	modkit_player_proto = {};
 
 	--- Gets the player's ships (alive ships)
