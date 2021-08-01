@@ -177,5 +177,5 @@ NewShipType.homingDelay=0.5
 NewShipType.strikeGroupSpeed=5000
 NewShipType.canSurround=0
 
-
-addCustomCode(NewShipType, "data:scripts/driver.lua", "load", "create", "update", "destroy", "tai_defensefighter", 1);
+-- soon
+-- addCustomCode(NewShipType, "data:scripts/driver.lua", "load", "create", "update", "destroy", "tai_defensefighter", 1);
