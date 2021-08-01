@@ -34,6 +34,11 @@ if (modkit.table == nil) then
 	-- The functions here are intentionally designed to mimick their JS counterparts for Arrays:
 	-- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array
 	local table = {
+		--- Returns a new table comprised of elements in `table` which pass the given `predicate` function (any non-`nil` return is considered a 'pass').
+		---
+		---@param table table
+		---@param predicate fun(val: any, index: any, tbl: table)
+		---@return table
 		filter = function (table, predicate)
 			local out = {};
 			for i, v in table do
@@ -71,6 +76,7 @@ if (modkit.table == nil) then
 				end
 			end
 		end,
+		---@return 'nil'|'any'
 		find = function (table, predicate)
 			for i, v in table do
 				if (type(predicate) == "function") then
@@ -137,6 +143,15 @@ if (modkit.table == nil) then
 				end
 			end
 			return 1;
+		end,
+		--- Difference: Any elements in `tbl_a`, which are not found in `tbl_b`.
+		---
+		---@param tbl_a table
+		---@param tbl_b table
+		difference = function (tbl_a, tbl_b)
+			return modkit.table.filter(tbl_a, function (a_val)
+				return modkit.table.find(%tbl_b, a_val) == nil; -- elements in A, but not B
+			end);
 		end
 	};
 
@@ -200,10 +215,7 @@ if (modkit.table == nil) then
 		return out;
 	end
 
-	modkit.table = {};
-	for k, v in table do
-		modkit.table[k] = v;
-	end
+	modkit.table = table;
 
 	print("table_util init");
 end
