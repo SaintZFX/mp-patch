@@ -102,10 +102,10 @@ function drones_proto:produceMissingDrones()
 	-- 		hp = drone:HP()
 	-- 	};
 	-- end), "live drones")
-	print("[" .. Universe_GameTime() .. "] produce missing drones call for " .. self.own_group);
+	-- print("[" .. Universe_GameTime() .. "] produce missing drones call for " .. self.own_group);
 	if (modkit.table.length(self.new_drones) == 0 and modkit.table.length(self.live_drones) < modkit.table.length(self.parade_positions)) then
 		self.new_drones = {};
-		print("[" .. Universe_GameTime() .. "] frigate " .. self.own_group .. " has no drones! (tick: " .. self:tick() .. ")");
+		-- print("[" .. Universe_GameTime() .. "] frigate " .. self.own_group .. " has no drones! (tick: " .. self:tick() .. ")");
 		for i = 1, modkit.table.length(self.parade_positions) do
 			if (self.live_drones[i] == nil) then
 				self:produceShip("kus_drone" .. i - 1);
@@ -113,37 +113,37 @@ function drones_proto:produceMissingDrones()
 			end
 		end
 	end
-	print("production done!");
+	-- print("production done!");
 end
 
 --- Adds any drones (produced by `self:produceMissingDrones`) to `self.live_drones`.
 function drones_proto:addProducedDronesToList()
-	print("[" .. Universe_GameTime() .. "] hi from drone collation run for " .. self.own_group);
+	-- print("[" .. Universe_GameTime() .. "] hi from drone collation run for " .. self.own_group);
 
-	print("new_drones? " .. modkit.table.length(self.new_drones));
+	-- print("new_drones? " .. modkit.table.length(self.new_drones));
 
 	if (modkit.table.length(self.new_drones) > 0) then
 		local our_docked_drones = GLOBAL_SHIPS:drones(function (ship)
 			return ship:docked(%self);
 		end);
-		print("begin assigning new drones...");
+		-- print("begin assigning new drones...");
 		for i, drone_type_index in self.new_drones do
-			print("drone " .. i);
+			-- print("drone " .. i);
 			self.live_drones[drone_type_index] = modkit.table.find(our_docked_drones, function (drone)
 				return %self:droneTypeIndex(drone) == %drone_type_index;
 			end) or self.live_drones[drone_type_index];
 
 			local drone = self.live_drones[drone_type_index];
 			if (drone) then
-				print("drone link phase for drone " .. drone.own_group);
+				-- print("drone link phase for drone " .. drone.own_group);
 				self.new_drones[i] = nil;
 				drone:link(self);
 			else
-				print("no drone to assign");
+				-- print("no drone to assign");
 			end
 		end
 	end
-	print("collection done!");
+	-- print("collection done!");
 end
 
 --- Launches any drones currently docked.
@@ -218,7 +218,7 @@ function drones_proto:init()
 			self.collate_event_id = modkit.scheduler:every(
 				10,
 				function ()
-					print("[" .. Universe_GameTime() .. "] begin fast run")
+					-- print("[" .. Universe_GameTime() .. "] begin fast run")
 					if (%self:frigateReady()) then
 						%self:pruneDeadDrones();
 						%self:addProducedDronesToList();
@@ -226,7 +226,7 @@ function drones_proto:init()
 					else
 						%self:killDrones();
 					end
-					print("fast run end");
+					-- print("fast run end");
 				end
 			);
 		end
@@ -234,11 +234,11 @@ function drones_proto:init()
 			self.repopulate_event_id = modkit.scheduler:every(
 				20, -- seconds = this number * modkit_scheduler.seconds_per_tick
 				function ()
-					print("[" .. Universe_GameTime() .. "] begin slow run")
+					-- print("[" .. Universe_GameTime() .. "] begin slow run")
 					if (%self:frigateReady()) then
 						%self:produceMissingDrones();
 					end
-					print("slow run end");
+					-- print("slow run end");
 				end
 			);
 		end
