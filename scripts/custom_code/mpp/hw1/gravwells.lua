@@ -1,11 +1,13 @@
 -- By: Fear
 -- Readable stock code!
 -- Also plays glow effect on trapped ships.
+-- Flow begins at `go()`.
 
 ---@class GravwellAttribs
----@field stunnable_ships Ship[]
 ---@field active '0'|'1'
 ---@field tumble_index integer
+---@field all_unique_trapped Ship[]
+---@field previous_tick_trapped Ship[]
 
 --- Stuff for gw generators (hw1)
 ---@class GravwellProto : Ship, GravwellAttribs
@@ -34,25 +36,15 @@ gravwell_proto = {
 	},
 	attribs = function ()
 		return {
-			stunnable_ships = {},
 			active = 0,
-			tumble_index = 0
+			tumble_index = 0,
+			all_unique_trapped = {},
+			previous_tick_trapped = {},
 		};
 	end
 };
 
---- Removes dead references
-function gravwell_proto:pruneDeadStunnables()
-	for i, ship in self.stunnable_ships do
-		if (ship:HP() <= 0 or ship:alive() == nil) then
-			self.stunnable_ships[i] = nil;
-		end
-	end
-end
 
---- Gets the currently indexed tumble vector. Increments the index after.
----
----@return Vec3
 function gravwell_proto:nextTumble()
 	local tumble = self.random_tumbles[self.tumble_index];
 	self.tumble_index = self.tumble_index + 1;
@@ -65,61 +57,43 @@ end
 --- Calculates the group of ships which are stunnable (strikecraft and in range).
 ---
 ---@return Ship[]
-function gravwell_proto:calculateNewStunnables()
-	local new_stunnables = GLOBAL_SHIPS:strike(function (ship)
+function gravwell_proto:calculateNewTrappables()
+	return GLOBAL_SHIPS:strike(function (ship)
 		return ship:alive() and ship:isSalvager() == nil and ship:distanceTo(%self) < %self.effect_range;
 	end);
-	local new_stunnables_count = modkit.table.reduce(new_stunnables, function (acc, ship)
-		return acc + (ship:count() / ship:batchSize());
-	end, 0);
-	local old_stunnables_count = modkit.table.reduce(self.stunnable_ships, function (acc, ship)
-		return acc + (ship:count() / ship:batchSize());
-	end, 0);
-	-- modkit.table.printTbl(modkit.table.map(new_stunnables, function (ship) return ship.own_group; end), "new stunnables");
-	-- modkit.table.printTbl(modkit.table.map(self.stunnable_ships, function (ship) return ship.own_group; end), "old stunnables");
-	if (old_stunnables_count > new_stunnables_count) then
-		local ships_to_unstun = modkit.table.filter(self.stunnable_ships, function (ship)
-			return ship:alive() and ship:distanceTo(%self) >= %self.effect_range - 10;
-		end);
-		self:tumbleStunned(0, ships_to_unstun);
-		self:setStunnablesStunned(0, ships_to_unstun);
-		self.stunnable_ships = new_stunnables;
-	else
-		self.stunnable_ships = new_stunnables;
-	end
 end
 
---- Stuns or unstuns any ships gathered via `self:calculateStunnables`.
----
----@param stunned '0'|'1'
----@return Ship[]
-function gravwell_proto:setStunnablesStunned(stunned, specific_ships)
-	for _, ship in (specific_ships or self.stunnable_ships) do
-		ship:stunned(stunned);
-		if (stunned == 1) then
+---@param ships Ship[]
+---@param trapped '0'|'1'
+function gravwell_proto:setTrapped(ships, trapped)
+	for _, ship in ships do
+		ship:stunned(trapped);
+		if (trapped == 1) then
+			if (ship:tumble()[1] == 0) then -- isn't tumbling (we only want to tumble a ship once)
+				ship:tumble(self:nextTumble());
+			end
 			ship:speed(0);
 		else
+			ship:tumble(0);
 			ship:speed(1);
 		end
 	end
-	return self.stunnable_ships;
 end
 
-
---- Applies a pre-genned tumble vector to stunned ships.
+--- Records any ships in the newly trapped group which have not been seen before.
 ---
----@param override '0'|Vec3
-function gravwell_proto:tumbleStunned(override, specific_ships)
-	for _, ship in (specific_ships or self.stunnable_ships) do
-		if (ship:tumble()[1] == 0) then -- we have no tumble
-			ship:tumble(override or self:nextTumble());
-		end
+---@param newly_trapped Ship[]
+function gravwell_proto:rememberUniqueTrapped(newly_trapped)
+	for _, trapped_ship in newly_trapped do
+		self.all_unique_trapped[trapped_ship.id] = self.all_unique_trapped[trapped_ship.id] or trapped_ship;
 	end
 end
 
 --- Applies self damage, disables hyperspace, and plays the blue glow.
 ---
----@param apply integer
+--- `1` -> effects applied, `0` -> effects cleared
+---
+---@param apply '0'|'1'
 function gravwell_proto:ownEffects(apply)
 	local ab_enabled = max(apply + 1, 2);
 	self:canHyperspace(ab_enabled);
@@ -132,24 +106,22 @@ function gravwell_proto:ownEffects(apply)
 	end
 end
 
---- Unstuns any ships previously trapped, and undoes any effects lasting from previous `self:ownEffects` calls.
 function gravwell_proto:cleanUp()
-	self:tumbleStunned(0);
-	self:calculateNewStunnables();
-	self:setStunnablesStunned(0);	-- free any captured if we have any
-	self:ownEffects(0);				-- re-enable hyperspace etc.
-	self.active = 0;
+	self.active = 0; -- for ai
+	self:setTrapped(self.all_unique_trapped, 0); -- all previously interacted ships are freed
+	self.all_unique_trapped = {}; -- clear for next time
+	self:ownEffects(0); -- re-enable our hs etc
 end
 
 --- Stuff that only AI-controlled gravwells should do.
 --- Causes the gravwell to automatically activate under certain conditions.
 function gravwell_proto:AIOnly()
 	if (self.player():isHuman() == nil) then
-		self:calculateNewStunnables();
-		local friendlies = modkit.table.filter(self.stunnable_ships, function (ship)
+		local trappables = self:calculateNewTrappables();
+		local friendlies = modkit.table.filter(trappables, function (ship)
 			return ship.player():alliedWith(%self.player()) == 1;
 		end);
-		local enemies = modkit.table.filter(self.stunnable_ships, function (ship)
+		local enemies = modkit.table.filter(trappables, function (ship)
 			return ship.player():alliedWith(%self.player()) == 0;
 		end);
 
@@ -212,17 +184,16 @@ function gravwell_proto:start()
 end
 
 function gravwell_proto:go()
-	self:calculateNewStunnables()	-- calculate new ships to stun
-	self:setStunnablesStunned(1)	-- stun those guys
-	self:tumbleStunned();
-	self:ownEffects(1)				-- play blue glow on self, inflict self damage, disable own hyperspace, etc
+	local new_trappables = self:calculateNewTrappables(); -- calculate which ships to stun this pass
+	self:setTrapped(new_trappables, 1); -- stun them
+	local difference_from_last = modkit.table.difference(self.previous_tick_trapped, new_trappables); -- any from last who didnt pass this time = diff to unstun
+	self:setTrapped(difference_from_last, 0); -- unstun ships from last time which are not in our current batch to stun
+	self:ownEffects(1);
+	self:rememberUniqueTrapped(new_trappables); -- record any new ships we havent recorded interacting with yet (used for cleanup)
+	self.previous_tick_trapped = new_trappables; -- save last run ships to compare with next run
 end
 
 function gravwell_proto:finish()
-	self:cleanUp();
-end
-
-function gravwell_proto:destroy()
 	self:cleanUp();
 end
 
