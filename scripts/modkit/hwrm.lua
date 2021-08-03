@@ -276,10 +276,10 @@ if (nil) then
 	end
 
 	--- in progress...
-	---@param player_index any
-	---@param group_name any
-	---@param target_selection any
-	---@param attack any
+	---@param player_index integer
+	---@param group_name string
+	---@param target_selection string
+	---@param attack '0'|'1'
 	function SobGroup_AttackSelection(player_index, group_name, target_selection, attack)
 	end
 
