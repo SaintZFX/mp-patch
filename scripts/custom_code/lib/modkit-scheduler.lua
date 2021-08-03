@@ -43,7 +43,7 @@ function modkit_scheduler_proto:collectShips()
 	GLOBAL_SHIPS.cache.newly_created = {};
 end
 
-function modkit_scheduler_proto:updateGlobalLists()
+function modkit_scheduler_proto:beginGlobalLists()
 	if (GLOBAL_SHIPS.cache == nil) then
 		GLOBAL_SHIPS.cache = {};
 	end
@@ -63,6 +63,7 @@ function modkit_scheduler_proto:updateGlobalLists()
 		end
 	end
 
+	-- controls the poll rate for ship collection event
 	modkit_scheduler_proto.init_event = modkit_scheduler_proto.init_event or modkit.scheduler:every(
 		50,
 		function ()
@@ -87,7 +88,7 @@ function modkit_scheduler_proto:init()
 	if (self._init == nil) then
 		self:spawn(0); -- hide the scheduler
 
-		self:updateGlobalLists();
+		self:beginGlobalLists();
 
 		self._init = 1;
 	end
