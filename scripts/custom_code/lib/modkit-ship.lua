@@ -466,6 +466,22 @@ function modkit_ship:attacking(target)
 	end
 end
 
+--- Returns any guard targets for this ship. If `target` is provided, returns whether or not this ship is guarding the `target`.
+---
+---@param target? Ship
+---@return 'Ship[]'|bool
+function modkit_ship:guarding(target)
+	if (target) then
+		local targets_group = SobGroup_Fresh("targets-group-" .. self.id .. "-" .. COMMAND_Guard);
+		SobGroup_GetCommandTargets(targets_group, self.own_group, COMMAND_Guard);
+		return SobGroup_GroupInGroup(target.own_group, targets_group) == 1;
+	else
+		return modkit.table.filter(GLOBAL_SHIPS:allied(self), function (ship) -- note: can be pretty expensive
+			return SobGroup_IsGuardingSobGroup(%self.own_group, ship.own_group);
+		end);
+	end
+end
+
 --- Returns `1` if this ship is under attack from any source, else `nil`. If `attacker` is provided, check instead if
 --- this ship is under attack by that attacker (instead of anything).
 ---
