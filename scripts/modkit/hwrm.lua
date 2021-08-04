@@ -315,13 +315,6 @@ if (nil) then
 	function SobGroup_ManualEngineGlow(group_name, thrust_value)
 	end
 
-	--- Selection stuff (NEEDS TESTING, USED ONLY BY DEFENSE FIGHTER CUSTOM CODE):
-
-	--- Creates a new selection `selection_name`.
-	---@param selection_name string
-	function SobGroup_CreateSelection(selection_name)
-	end
-
 	--- Spawn stuff
 
 	--- Spawns a `ship_type` squadron named `new_squad_name`, and adds it to `target_group`. The squad is spawned at `volume_name`.
@@ -334,5 +327,47 @@ if (nil) then
 	---@param volume_name string
 	---@return nil
 	function SobGroup_SpawnNewShipInSobGroup(player_index, ship_type, new_squad_name, target_group, volume_name)
+	end
+
+	--- Selection stuff (NEEDS TESTING, USED ONLY BY DEFENSE FIGHTER CUSTOM CODE):
+
+	--- Creates a new selection `selection_name` (returns nothing).
+	---@param selection_name string
+	function Selection_Create(selection_name)
+	end
+
+	--- Fills the given selection with all universe missiles.
+	--- Returns the number of missiles selected.
+	---
+	---@param selection_name string
+	---@return integer
+	function Selection_GetMissiles(selection_name)
+	end
+
+	--- Fills `target_selection` with all entities in `source_selection` which satisfy `filter_type` for `value_1`, and optionally `value_2`.
+	--- Returns the number of entities left after filtering.
+	---
+	--- Note: `value_2` is not optional, you should pass an empty string for nil.
+	---
+	---@param target_selection string
+	---@param source_selection string
+	---@param filter_type string
+	---@param value_1 any
+	---@param value_2 any
+	---@return integer
+	function Selection_FilterInclude(target_selection, source_selection, filter_type, value_1, value_2)
+	end
+
+	--- Fills `target_selection` with all values in `source_selection` which do NOT satisfy `filter_type` for `value_1`, and optionally `value_2`
+	---
+	--- Note: `value_2` is not optional, you should pass an empty string for nil.
+	---
+	---@param target_selection string
+	---@param source_selection string
+	---@param filter_type string
+	---@param value_1 any
+	---@param value_2 any
+	---@return integer
+	function Selection_FilterExclude(target_selection, source_selection, filter_type, value_1, value_2)
 	end
 end
