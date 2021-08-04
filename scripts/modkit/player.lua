@@ -8,7 +8,39 @@ if (GLOBAL_TEAMS == nil) then dofilepath("data:scripts/modkit/team.lua"); end
 if (modkit_player_proto == nil) then
 
 	-- global memgroup for players
-	GLOBAL_PLAYERS = modkit.MemGroup.Create("mg-players-global");
+	
+	function initPlayers()
+		if (GLOBAL_PLAYERS == nil) then
+			GLOBAL_PLAYERS = modkit.MemGroup.Create("mg-players-global");
+		
+			for i = 0, Universe_PlayerCount() - 1 do
+				GLOBAL_PLAYERS:set(i, modkit.table:merge(
+					modkit_player_proto,
+					{
+						id = i
+					}
+				));
+			end
+
+			-- map/ambient units
+			GLOBAL_PLAYERS:set(-1, modkit.table:merge(
+				modkit_player_proto,
+				{
+					id = -1
+				}
+			));
+
+			function GLOBAL_PLAYERS:all()
+				local out = {};
+				for i, player in self._entities do
+					if (i >= 0) then
+						out[i] = player;
+					end
+				end
+				return out;
+			end
+		end
+	end
 
 	-- Note that the `id` field is only set later when the player is actually constructed later
 
@@ -114,9 +146,9 @@ if (modkit_player_proto == nil) then
 
 	--- Return `1` if this player is allied with the `other`. `0` otherwise.
 	---@param other table
-	---@return integer
+	---@return bool
 	function modkit_player_proto:alliedWith(other)
-		return self.id == other.id or AreAllied(self.id, other.id);
+		return self.id == other.id or AreAllied(self.id, other.id) == 1;
 	end
 
 	--- Returns the players team, which is a high level type just like players and ships.

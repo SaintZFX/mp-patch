@@ -12,6 +12,8 @@ if (H_DRIVER == nil) then
 
 	GLOBAL_SHIPS = modkit.MemGroup.Create("mg-ships-global");
 
+	initPlayers(); -- modkit/player.lua
+
 	function GLOBAL_SHIPS:allied(caller)
 		local allied_ships = {};
 		for index, ship in self:all() do

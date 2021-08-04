@@ -24,22 +24,10 @@ modkit_base = {
 	---@param s integer
 	---@return Attribs
 	attribs = function (g, p, s)
-		local player = function ()
-			return
-				GLOBAL_PLAYERS:get(%p) or
-				GLOBAL_PLAYERS:set(%p,
-					modkit.table:merge(
-						modkit_player_proto,
-						{
-							id = %p
-						}
-					)
-				);
-		end;
 		return {
 			type_group = g,
 			own_group = SobGroup_Clone(g, g .. "-" .. s),
-			player = player,
+			player = GLOBAL_PLAYERS:get(p),
 			_tick = 0,
 			created_at = Universe_GameTime()
 		};

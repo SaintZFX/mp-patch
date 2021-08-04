@@ -19,7 +19,7 @@ function base_prodship_proto:showProductionSubsystems()
 		SuperCapitalShipDrive = "CapShipProduction"
 	};
 	for tech, subsystem in tech_subs do
-		if (self.player():hasResearch(tech) == 1) then
+		if (self.player:hasResearch(tech) == 1) then
 			if (tech == "SuperCapitalShipDrive") then -- only add capship to motherships
 				if (self:isMothership()) then
 					SobGroup_CreateSubSystem(self.own_group, subsystem);
@@ -36,7 +36,7 @@ function base_prodship_proto:ensureSingleResShipQueued()
 	if (self.single_ship_queue_event_id == nil) then
 		-- predicate function
 		local isOurBuilder = function (ship)
-			return (ship:player().id == %self.player().id) and ship:canBuild() and ship.id ~= %self.id;
+			return (ship.player.id == %self.player.id) and ship:canBuild() and ship.id ~= %self.id;
 		end
 		modkit.scheduler:every(500, function ()
 		end);
@@ -72,7 +72,7 @@ end
 
 
 function motherships_proto:create()
-	if self.player().id == Universe_CurrentPlayer() then
+	if self.player.id == Universe_CurrentPlayer() then
 		UI_SetElementVisible("NewResearchMenu", "Platform", 0);
 		UI_SetElementVisible("NewResearchMenu", "Utility", 0);
 	end
@@ -111,7 +111,7 @@ for k, v in base_prodship_proto do
 end
 
 function carriers_proto:create()
-	if self.player().id == Universe_CurrentPlayer() then
+	if self.player.id == Universe_CurrentPlayer() then
 		UI_SetElementVisible("NewResearchMenu", "Platform", 0);
 		UI_SetElementVisible("NewResearchMenu", "Utility", 0);
 	end

@@ -4,14 +4,14 @@
 ai_parade_proto = {};
 
 function ai_parade_proto:paradeIfAI()
-	if (self.player():isHuman() == nil) then
+	if (self.player:isHuman() == nil) then
 		local target = GLOBAL_SHIPS:find( -- find a mothership; if that fails, find a carrier
 			function (ship)
-				return ship.player().id == %self.player().id and ship:isMothership();
+				return ship.player.id == %self.player.id and ship:isMothership();
 			end
 		) or GLOBAL_SHIPS:find(
 			function (ship)
-				return ship.player().id == %self.player().id and ship:isCarrier();
+				return ship.player.id == %self.player.id and ship:isCarrier();
 			end
 		);
 		if (target) then

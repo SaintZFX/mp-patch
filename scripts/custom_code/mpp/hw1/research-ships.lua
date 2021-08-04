@@ -58,7 +58,7 @@ end
 
 function res_ships_proto:getOurResShips()
 	return GLOBAL_SHIPS:filter(function (ship)
-		return (ship.player().id == %self.player().id) and ship:isResearchShip() and ship:HP() > 0;
+		return (ship.player.id == %self.player.id) and ship:isResearchShip() and ship:HP() > 0;
 	end);
 end
 
@@ -69,7 +69,7 @@ function res_ships_proto:restrictAll(ship_type, player)
 	else
 		race_prefix = self:race();
 	end
-	player = player or self.player();
+	player = player or self.player;
 	player:restrictBuildOption({
 		race_prefix .. "_researchship",
 		race_prefix .. "_researchship_1",
@@ -96,7 +96,7 @@ function res_ships_proto:setNextToBuild(ship_type, player)
 		suffix = "_" .. self.next_to_build_index;
 	end
 	ship_to_unrestrict = (ship_type or self.type_group) .. suffix;
-	player = player or self.player();
+	player = player or self.player;
 	player:restrictBuildOption({ship_to_unrestrict}, 0);
 end
 
@@ -120,14 +120,14 @@ function res_ships_proto:dockedAuxHubCount()
 end
 
 -- function res_ships_proto:paradeIfAI()
--- 	if (self.player():isHuman() == nil) then
+-- 	if (self.player:isHuman() == nil) then
 -- 		local target = GLOBAL_SHIPS:find( -- find a mothership, if that fails, find a carrier
 -- 			function (ship)
--- 				return ship.player().id == %self.player().id and ship:isMothership();
+-- 				return ship.player.id == %self.player.id and ship:isMothership();
 -- 			end
 -- 		) or GLOBAL_SHIPS:find(
 -- 			function (ship)
--- 				return ship.player().id == %self.player().id and ship:isCarrier();
+-- 				return ship.player.id == %self.player.id and ship:isCarrier();
 -- 			end
 -- 		);
 -- 		if (target) then

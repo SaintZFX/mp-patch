@@ -116,13 +116,13 @@ end
 --- Stuff that only AI-controlled gravwells should do.
 --- Causes the gravwell to automatically activate under certain conditions.
 function gravwell_proto:AIOnly()
-	if (self.player():isHuman() == nil) then
+	if (self.player:isHuman() == nil) then
 		local trappables = self:calculateNewTrappables();
 		local friendlies = modkit.table.filter(trappables, function (ship)
-			return ship.player():alliedWith(%self.player()) == 1;
+			return ship.player:alliedWith(%self.player);
 		end);
 		local enemies = modkit.table.filter(trappables, function (ship)
-			return ship.player():alliedWith(%self.player()) == 0;
+			return ship.player:alliedWith(%self.player) == nil;
 		end);
 
 		if (modkit.table.length(enemies) > 0) then
@@ -144,7 +144,7 @@ function gravwell_proto:AIOnly()
 				near_our_collectors = function ()
 					local outer_self = %self;
 					local our_nearby_collectors = GLOBAL_SHIPS:filter(function (ship)
-						return ship.player().id == %outer_self.player().id
+						return ship.player.id == %outer_self.player.id
 							and ship:isResourceCollector()
 							and %outer_self:distanceTo(ship) < %outer_self.effect_range * 1.1;
 					end);

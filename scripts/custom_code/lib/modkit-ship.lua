@@ -172,12 +172,12 @@ end
 
 function modkit_ship:attack(targets)
 	if (type(targets) == "string") then
-		SobGroup_Attack(self.player().id, self.own_group, targets);
+		SobGroup_Attack(self.player.id, self.own_group, targets);
 	elseif (targets.own_group) then
-		return SobGroup_Attack(self.player().id, self.own_group, targets.own_group);
+		return SobGroup_Attack(self.player.id, self.own_group, targets.own_group);
 	else
 		local temp_group = SobGroup_FromShips(self.own_group .. "-temp-attack-group", targets);
-		SobGroup_Attack(self.player().id, self.own_group, temp_group);
+		SobGroup_Attack(self.player.id, self.own_group, temp_group);
 	end
 end
 
@@ -187,10 +187,10 @@ end
 
 function modkit_ship:move(where)
 	if (type(where) == "string") then -- a volume
-		SobGroup_Move(self.player().id, self.own_group, where);
+		SobGroup_Move(self.player.id, self.own_group, where);
 	else -- a position
 		Volume_AddSphere(self._default_vol, where, 1);
-		SobGroup_MoveToPoint(self.player().id, self.own_group, where);
+		SobGroup_MoveToPoint(self.player.id, self.own_group, where);
 		Volume_Delete(self._default_vol);
 	end
 end
@@ -466,7 +466,7 @@ function modkit_ship:attacking(target)
 	end
 end
 
---- Returns any guard targets for this ship. If `target` is provided, returns whether or not this ship is guarding the `target`.
+--- Returns all guard targets for this ship (or nil). If `target` is provided, returns whether or not this ship is guarding the `target`.
 ---
 ---@param target? Ship
 ---@return 'Ship[]'|bool
@@ -476,9 +476,7 @@ function modkit_ship:guarding(target)
 		SobGroup_GetCommandTargets(targets_group, self.own_group, COMMAND_Guard);
 		return SobGroup_GroupInGroup(target.own_group, targets_group) == 1;
 	else
-		return modkit.table.filter(GLOBAL_SHIPS:allied(self), function (ship) -- note: can be pretty expensive
-			return SobGroup_IsGuardingSobGroup(%self.own_group, ship.own_group);
-		end);
+		return self:currentCommand() == COMMAND_Guard;
 	end
 end
 
@@ -628,7 +626,7 @@ function modkit_ship:spawnShip(type, position, spawn_group)
 	position = position or self:position();
 	spawn_group = spawn_group or SobGroup_Fresh("spawner-group-" .. self.id);
 	local volume_name = Volume_Fresh("spawner-vol-" .. self.id, position);
-	SobGroup_SpawnNewShipInSobGroup(self.player().id, type, "-", spawn_group, volume_name);
+	SobGroup_SpawnNewShipInSobGroup(self.player.id, type, "-", spawn_group, volume_name);
 	Volume_Delete(volume_name);
 	return spawn_group;
 end
