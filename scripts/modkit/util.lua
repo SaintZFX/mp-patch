@@ -16,7 +16,7 @@ end
 ---@return table
 function Universe_GetOtherPlayerShips(player)
 	local others = GLOBAL_SHIPS:filter(function (ship)
-		return ship.player().id ~= %player.id;
+		return ship.player.id ~= %player.id;
 	end);
 	return others;
 end
@@ -27,7 +27,7 @@ end
 ---@return table
 function Universe_GetPlayerShips(player)
 	local ships = GLOBAL_SHIPS:filter(function (ship)
-		return ship.player().id == %player.id;
+		return ship.player.id == %player.id;
 	end);
 	return ships;
 end
