@@ -25,17 +25,17 @@ NewShipType.formationSpacing=15
 NewShipType.defaultROE="Defensive"
 NewShipType.defaultStance="Aggressive"
 NewShipType.holdSlots=2
-NewShipType.mass=10
+NewShipType.mass=15
 NewShipType.collisionMultiplier=1
-NewShipType.thrusterMaxSpeed=430*0.77
+NewShipType.thrusterMaxSpeed=487
 NewShipType.mainEngineMaxSpeed=487
-NewShipType.rotationMaxSpeed=90
+NewShipType.rotationMaxSpeed=130
 NewShipType.thrusterAccelTime=2*1.15
 NewShipType.thrusterBrakeTime=1*1.1
 NewShipType.mainEngineAccelTime=2*1.15
 NewShipType.mainEngineBrakeTime=1*1.1
-NewShipType.rotationAccelTime=0.74
-NewShipType.rotationBrakeTime=0.3*1.1
+NewShipType.rotationAccelTime=0.4
+NewShipType.rotationBrakeTime=0.3
 NewShipType.thrusterUsage=0.25
 NewShipType.accelerationAngle=175
 NewShipType.mirrorAngle=25
@@ -150,7 +150,6 @@ addAbility(NewShipType,"HyperspaceViaGateCommand",1,3,1,0.3);
 addAbility(NewShipType,"RetireAbility",1,0);
 addMagneticField(NewShipType,"MagneticField",600,100,"defenseField_generic",90,"defenseField_generic",100,"plasma_hit_spray_MagneticField","defensefield_sphere_spray_DF");
 AddShipMultiplier(NewShipType,"WeaponAccuracy","EnemyShipsWithinRadius","Linear",0.99,0.99,700);
-addCustomCode(NewShipType,"data:ship/Tai_DefenseFighter/Tai_DefenseFighter.lua","","","updateDefenseFighter","","DefenseFighter",1.25)
 LoadModel(NewShipType,1);
 StartShipWeaponConfig(NewShipType,"Tai_DefenseLaser","Weapon_Gun0","");
 addShield(NewShipType,"EMP",65,20);
@@ -177,5 +176,6 @@ NewShipType.homingDelay=0.5
 NewShipType.strikeGroupSpeed=5000
 NewShipType.canSurround=0
 
+-- addCustomCode(NewShipType,"data:ship/Tai_DefenseFighter/Tai_DefenseFighter.lua","","","updateDefenseFighter","","DefenseFighter",1.25)
 -- soon
--- addCustomCode(NewShipType, "data:scripts/driver.lua", "load", "create", "update", "destroy", "tai_defensefighter", 1);
+addCustomCode(NewShipType, "data:scripts/driver.lua", "load", "create", "update", "destroy", "tai_defensefighter", 1);
