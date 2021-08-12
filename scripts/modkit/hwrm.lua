@@ -46,6 +46,15 @@ if (nil) then
 	COMMAND_Resource = 5;
 	COMMAND_Launch = 6;
 	COMMAND_WaypointMove = 7;
+	COMMAND_Parade = 8;
+	COMMAND_Guard = 9;
+	COMMAND_Capture = 10;
+	COMMAND_Hyperspace = 11;
+	COMMAND_MoveToSob = 12;
+	COMMAND_FormHyperspaceGate = 13;
+	COMMAND_HyperspaceViaGate = 14;
+	COMMAND_Repair = 15;
+	COMMAND_Retire = 16;
 	-- ...todo
 
 	OffensiveROE = 0;
