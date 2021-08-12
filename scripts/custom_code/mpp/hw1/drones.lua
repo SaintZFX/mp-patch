@@ -189,8 +189,8 @@ function drones_proto:positionLaunchedDrones()
 	for _, drone in self.live_drones do
 		if (drone:docked(self) == nil) then
 			local pos = self:droneParadePos(drone);
-			if (drone:attacking() or self:attacking()) then
-				if (drone:distanceTo(pos) > 30) then
+			if (drone:attacking()) then
+				if (drone:distanceTo(pos) > 100) then
 					drone:move(pos);
 				end
 			else
