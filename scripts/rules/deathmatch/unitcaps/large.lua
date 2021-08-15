@@ -70,7 +70,8 @@ supplyLimit("HyperspacePlatform", 8);
 supplyLimit("Mothership", 1);
 --
 supplyLimit("SinglePlayerMisc", 100);
-
+--
+supplyLimit("DreadNaught", 1);
 
 
 
