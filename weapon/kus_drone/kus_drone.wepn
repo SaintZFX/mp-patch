@@ -1,11 +1,11 @@
 StartWeaponConfig(NewWeaponType,"AnimatedTurret","Bullet","HW1Kinetic_Small","Normal",2800,2660,0,0,0,0,1,1,0,1.0,1,0.2,1,0,125,125,0.1,"Normal",1,0,0)
 AddWeaponResult(NewWeaponType,"Hit","DamageHealth","Target",50,50,"")
 setPenetration(NewWeaponType,5,1,
-{unarmoured=0.15},
-{unarmoured_hw1=0.15},
-{LightArmour=0.1},
-{LightArmour_hw1=0.1},
-{MediumArmour=0.30},
+{unarmoured=0.25},
+{unarmoured_hw1=0.25},
+{LightArmour=0.15},
+{LightArmour_hw1=0.2},
+{MediumArmour=0.35},
 {SuperUtilityArmour = 0.50},
 {HeavyArmour=0.25},
 {DestroyerArmour = 0.25},
