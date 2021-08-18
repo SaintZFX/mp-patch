@@ -193,3 +193,6 @@ NewShipType.agileFlight=1
 NewShipType.homingDistance=2000
 NewShipType.homingDelay=0.5
 NewShipType.canSurround=0
+
+
+addCustomCode(NewShipType, "data:scripts/driver.lua", "load", "create", "update", "destroy", "hgn_attackbomber", 1);

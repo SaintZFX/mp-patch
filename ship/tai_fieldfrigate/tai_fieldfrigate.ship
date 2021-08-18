@@ -169,3 +169,6 @@ NewShipType.explosiveDamageOnDeath=50
 NewShipType.hideNormalAttackUICooldown=1
 NewShipType.strikeGroupSpeed=5000
 NewShipType.canSurround=1
+
+
+addCustomCode(NewShipType, "data:scripts/driver.lua", "load", "create", "update", "destroy", "tai_fieldfrigate", 1);

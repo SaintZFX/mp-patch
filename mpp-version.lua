@@ -1,1 +1,1 @@
-mpp_version = " + Multiplayer Patch v1.0.2"
+mpp_version = " + Multiplayer Patch v1.0.3 - Code Overhaul (modkit - def fighters)"

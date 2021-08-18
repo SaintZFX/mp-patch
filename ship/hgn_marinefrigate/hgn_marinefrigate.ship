@@ -178,3 +178,6 @@ NewShipType.maxFalloffForce=500*10
 NewShipType.explosiveDamageOnDeath=50													 
 NewShipType.hideNormalAttackUICooldown=1
 NewShipType.canSurround=1
+
+
+addCustomCode(NewShipType, "data:scripts/driver.lua", "load", "create", "update", "destroy", "hgn_marinefrigate", 1);

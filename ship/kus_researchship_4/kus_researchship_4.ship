@@ -14,7 +14,7 @@ NewShipType.defaultROE="Defensive"
 NewShipType.defaultStance="Neutral"
 NewShipType.isTransferable=0
 NewShipType.mass=100
-NewShipType.aabbExpand=50
+NewShipType.aabbexpand=5
 NewShipType.collisionMultiplier=1
 NewShipType.thrusterMaxSpeed=175
 NewShipType.mainEngineMaxSpeed=175
@@ -146,3 +146,6 @@ NewShipType.trailLinger=2
 setEngineBurn(NewShipType,6,3,3,4,0.1,0.1,0.1,15);
 setEngineGlow(NewShipType,1,1,1.02,20,300,50,1.5,{0.27, 0.47, .69, 0.25});
 loadShipPatchList(NewShipType,"data:sound/sfx/ship/Hiigaran/NonMilitary/",0,"Engines/HResourcerEng","",1,"Ambience/HResourcerAmb","");
+
+
+addCustomCode(NewShipType, "data:scripts/driver.lua", "load", "create", "update", "destroy", "kus_researchship_4", 1);

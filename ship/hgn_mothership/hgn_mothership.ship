@@ -203,3 +203,6 @@ NewShipType.explosiveDamageOnDeath=660*3
 NewShipType.hideNormalAttackUICooldown=1
 NewShipType.canSurround=1
 NewShipType.canRetireSubSystems=1
+
+
+addCustomCode(NewShipType, "data:scripts/driver.lua", "load", "create", "update", "destroy", "hgn_mothership", 1);

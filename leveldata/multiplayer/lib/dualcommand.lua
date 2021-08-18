@@ -3,8 +3,7 @@ dofilepath("player:racelist.lua")
 function DualCommand_Init() 
 	errorMessageDC = "Dual Command not setup correctly: \n" ..
 					 "Change your race to a Dual Command race, and then change a CPU ally to the \n" ..
-					 "same Dual Command race. Note, only one person can use this feature at a time. \n" ..
-					 "See the 2.3 Players Patch ReadMe for more information."
+					 "same Dual Command race. Note, only one person can use this feature at a time. \n"
 	currentRace = ""
 	masterID = nil
 	slaveID = nil

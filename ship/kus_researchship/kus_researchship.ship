@@ -15,7 +15,7 @@ NewShipType.paradeData="dummy_parade"
 NewShipType.defaultROE="Defensive"
 NewShipType.defaultStance="Neutral"
 NewShipType.mass=100
-NewShipType.aabbExpand=50
+NewShipType.aabbexpand=5
 NewShipType.collisionMultiplier=1
 NewShipType.thrusterMaxSpeed=175
 NewShipType.mainEngineMaxSpeed=175
@@ -133,7 +133,6 @@ addAbility(NewShipType,"WaypointMove");
 addAbility(NewShipType,"GuardCommand",1,3000,500);
 addAbility(NewShipType,"CanBeRepaired");
 addAbility(NewShipType,"RetireAbility",0,0);
-addCustomCode(NewShipType,"data:Ship/Kus_ResearchShip/Kus_ResearchShip.lua","Load_Kus_ResearchShip","Create_Kus_ResearchShip","Update_Kus_ResearchShip","Destroy_Kus_ResearchShip","kus_researchship",2.2)
 LoadModel(NewShipType,1);
 addShield(NewShipType,"EMP",220,20);
 StartShipHardPointConfig(NewShipType,"Research Module","ResearchShip","System","Innate","Damageable","HW1_ResearchModule","","","","","","","","");
@@ -152,3 +151,7 @@ loadShipPatchList(NewShipType,"data:sound/sfx/ship/Hiigaran/NonMilitary/",0,"Eng
 NewShipType.minFalloffDamageDist=0
 NewShipType.maxFalloffDamageDist=400
 NewShipType.maxFalloffDamage=400
+
+
+-- addCustomCode(NewShipType,"data:Ship/Kus_ResearchShip/Kus_ResearchShip.lua","Load_Kus_ResearchShip","Create_Kus_ResearchShip","Update_Kus_ResearchShip","Destroy_Kus_ResearchShip","kus_researchship",2.2)
+addCustomCode(NewShipType, "data:scripts/driver.lua", "load_kus_res_ship", "create", "update", "destroy", "kus_researchship", 1);

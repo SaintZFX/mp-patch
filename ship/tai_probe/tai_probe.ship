@@ -133,3 +133,6 @@ NewShipType.maxFalloffScuttleDamageDist=25*6
 NewShipType.explosiveScuttleDamageOnDeath=125
 NewShipType.maxFalloffForce=15*10
 NewShipType.explosiveDamageOnDeath=27
+
+
+addCustomCode(NewShipType, "data:scripts/driver.lua", "load", "create", "update", "destroy", "tai_probe", 1);

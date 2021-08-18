@@ -180,3 +180,6 @@ NewShipType.maxFalloffForce=20*10
 NewShipType.explosiveDamageOnDeath=113													 
 NewShipType.hideNormalAttackUICooldown=1
 NewShipType.strikeGroupSpeed=5000
+
+
+addCustomCode(NewShipType, "data:scripts/driver.lua", "load", "create", "update", "destroy", "kus_resourcecollector", 1);

@@ -177,3 +177,6 @@ NewShipType.hideNormalAttackUICooldown=1
 NewShipType.agileFlight=1
 NewShipType.homingDistance=2000
 NewShipType.homingDelay=0.5
+
+
+addCustomCode(NewShipType, "data:scripts/driver.lua", "load", "create", "update", "destroy", "tai_lightcorvette", 1);

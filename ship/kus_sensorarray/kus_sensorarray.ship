@@ -158,3 +158,6 @@ NewShipType.explosiveScuttleDamageOnDeath=206
 NewShipType.maxFalloffForce=500*10
 NewShipType.explosiveDamageOnDeath=41
 
+
+
+addCustomCode(NewShipType, "data:scripts/driver.lua", "load", "create", "update", "destroy", "kus_sensorarray", 1);

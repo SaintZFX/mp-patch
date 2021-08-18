@@ -148,7 +148,6 @@ addAbility(NewShipType,"CanAttack",1,1,0,0,0.35,1,"Fighter_hw1, Fighter, Swarmer
 addAbility(NewShipType,"CanBuildShips",1,"Fighter_Tai, Corvette_Tai, Frigate_Tai, SuperCap_Tai, Resource_Tai, NonCombat_Tai","Fighter, Corvette, Frigate, Capital, Resource, NonCombat");
 addAbility(NewShipType,"CanBeCaptured",300,0.5);
 addAbility(NewShipType,"CanBeRepaired");
-addCustomCode(NewShipType,"data:Ship/Tai_Mothership/Tai_Mothership.lua","Load_Tai_Mothership","Create_Tai_Mothership","Update_Tai_Mothership","Destroy_Tai_Mothership","Tai_Mothership",2)
 LoadModel(NewShipType,1);
 addShield(NewShipType,"EMP",10000,20);
 StartShipWeaponConfig(NewShipType,"HW1_MothershipGun","Weapon_HullDefense1","");
@@ -194,3 +193,6 @@ NewShipType.maxFalloffForce=500*10
 NewShipType.explosiveDamageOnDeath=660*3													 
 NewShipType.hideNormalAttackUICooldown=1
 NewShipType.canSurround=1
+
+-- addCustomCode(NewShipType,"data:Ship/Tai_Mothership/Tai_Mothership.lua","Load_Tai_Mothership","Create_Tai_Mothership","Update_Tai_Mothership","Destroy_Tai_Mothership","Tai_Mothership",2)
+addCustomCode(NewShipType, "data:scripts/driver.lua", "load", "create", "update", "destroy", "tai_mothership", 1);

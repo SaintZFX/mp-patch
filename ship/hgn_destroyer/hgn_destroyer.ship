@@ -188,3 +188,6 @@ NewShipType.maxFalloffForce=500*10
 NewShipType.explosiveDamageOnDeath=538
 NewShipType.radiusDamageEvadeMod=1.1
 NewShipType.canSurround=1
+
+
+addCustomCode(NewShipType, "data:scripts/driver.lua", "load", "create", "update", "destroy", "hgn_destroyer", 1);
