@@ -10,7 +10,7 @@ Description:
 The MP Patch is based on the [url=http://steamcommunity.com/sharedfiles/filedetails/?id=1190476337]2.3 Players Patch[/url], however all continued development is entirely multiplayer focused. Although the campaign might still work, it could be arbitrarily harder or easier as no mind has been paid to campaign testing. The MP Patch will include maps, music, further balancing and bugfixing, map features and more.
 ---
 2.3 Credits: Gearbox, Cloaked, Fear, Trebic, NoOne, Echo, Stuart, QuadS, Kadeshi, and all the other contributors, testers, and players providing feedback. 2.3 Links: [url=https://github.com/HW-PlayersPatch/File_Share/blob/master/ChangeLists/2.3%20Players%20Patch%20-%20Full%20Change%20List.md]Full Change List[/url], [url=http://steamcommunity.com/workshop/filedetails/discussion/1190476337/1621724915806537704/]ReadMe[/url], [url=http://steamcommunity.com/sharedfiles/filedetails/?id=1190476337]Subscribe on Steam[/url], or [url=http://www.moddb.com/mods/homeworld-remastered-players-patch]Download for GOG[/url].
-MP Patch Credits: Fear (Testing help: Xenofix, Lacri, the community over at [url=https://discordapp.com/invite/homeworld]the official Homeworld Discord[/url]
+MP Patch Credits: Fear (Testing help: Xenofix, Lacri, the community over at [url=https://discordapp.com/invite/homeworld]the official Homeworld Discord[/url])
 ---
 Steam Instructions:
 1. Click Subscribe
