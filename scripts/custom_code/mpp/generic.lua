@@ -7,8 +7,8 @@ local generic_proto = {};
 
 -- Disable scuttle while a captured unit is being dropped off by salvage corvettes
 function generic_proto:noSalvageScuttle()
-	if ((self:isFighter() or self:isCorvette()) == nil and self:isDocking() == 1) then
-		self:canDoAbility(AB_Scuttle, 0);
+	if ((self:isFighter() or self:isCorvette()) == nil) then
+		self:canDoAbility(AB_Scuttle, 1 - self:isDocking());
 	end
 end
 
