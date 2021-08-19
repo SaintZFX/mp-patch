@@ -81,6 +81,11 @@ if (H_DRIVER == nil) then
 			caller = create(g, p, i);
 		end
 
+		local engine_player_index = SobGroup_GetPlayerOwner(caller.own_group);
+		if (caller.player.id ~= engine_player_index and engine_player_index >= 0 and engine_player_index < 8) then
+			caller.player = GLOBAL_PLAYERS:get(engine_player_index);
+		end
+
 		SobGroup_SobGroupAdd(caller.own_group, g); -- ensure own group is filled on update
 		caller:tick(caller:tick() + 1);
 
