@@ -108,6 +108,7 @@ NewShipType.nlipsFarRange=0
 NewShipType.SMRepresentation="Mesh"
 NewShipType.meshRenderLimit=40000
 NewShipType.dotRenderLimit=10
+NewShipType.AlwaysInRenderList = 1
 NewShipType.visibleInSecondary=1
 NewShipType.goblinsStartFade=5000
 NewShipType.goblinsOff=5000
@@ -124,7 +125,6 @@ NewShipType.alternativeHyperspaceTime=12.5
 NewShipType.SMHighlightDistMin=20000
 NewShipType.SMHighlightDistMax=30000
 addAbility(NewShipType,"MoveCommand",1,0);
-addAbility(NewShipType,"CanDock",1,1);
 NewShipType.dockTimeBetweenTwoFormations=1
 NewShipType.dockTimeBeforeStart=2
 NewShipType.dockNrOfShipsInDockFormation=1
@@ -146,22 +146,24 @@ addAbility(NewShipType,"WaypointMove");
 addAbility(NewShipType,"HyperSpaceCommand",0,2,500,1000,0,3);
 addAbility(NewShipType,"CanAttack",1,1,0,0,0.35,1.2,"BigCapitalShip, SmallCapitalShip, Capturer, Frigate, SubSystem, Mothership, Corvette, Fighter, Utility","Frontal",{Fighter="MoveToTargetAndShoot"},{Corvette="MoveToTargetAndShoot"},{Frigate="MoveToTargetAndShoot"},{Munition="MoveToTargetAndShoot"},{SubSystem="FrontalVsSubSystem"});
 addAbility(NewShipType,"GuardCommand",74,3000,1400);
-addAbility(NewShipType,"CanBeCaptured",160,0.5);
-addAbility(NewShipType,"CanBeSalvageCaptured",0,1,0,0,1,"SalCap");
+
+addAbility(NewShipType,"CanBeCaptured",			     100, 1);
+-- addAbility(NewShipType,"CanHaveTechHarvested","FighterDrive", 1, 100);
+
 addAbility(NewShipType,"CanBeRepaired");
 NewShipType.noCombatGrouping=1
 LoadModel(NewShipType,1);
 StartShipWeaponConfig(NewShipType,"Hgn_DreadnaughtIonCannon","Weapon_Triton1","Weapon_Triton1");
-StartShipWeaponConfig(NewShipType,"Hgn_DreadnaughtAutogun","Weapon_HullDefense1","Weapon_HullDefense1");
-StartShipWeaponConfig(NewShipType,"Hgn_DreadnaughtAutogun","Weapon_HullDefense2","Weapon_HullDefense2");
-StartShipWeaponConfig(NewShipType,"Hgn_DreadnaughtAutogun","Weapon_HullDefense3","Weapon_HullDefense3");
-StartShipWeaponConfig(NewShipType,"Hgn_DreadnaughtAutogun","Weapon_HullDefense4","Weapon_HullDefense4");
-StartShipWeaponConfig(NewShipType,"Hgn_DreadnaughtAutogun","Weapon_HullDefense5","Weapon_HullDefense5");
-StartShipWeaponConfig(NewShipType,"Hgn_DreadnaughtAutogun","Weapon_HullDefense6","Weapon_HullDefense6");
-StartShipWeaponConfig(NewShipType,"Hgn_DreadnaughtAutogun","Weapon_HullDefense7","Weapon_HullDefense7");
-StartShipWeaponConfig(NewShipType,"Hgn_DreadnaughtAutogun","Weapon_HullDefense8","Weapon_HullDefense8");
-StartShipWeaponConfig(NewShipType,"Hgn_DreadnaughtAutogun","Weapon_HullDefense9","Weapon_HullDefense9");
-StartShipWeaponConfig(NewShipType,"Hgn_DreadnaughtAutogun","Weapon_HullDefense10","Weapon_HullDefense10");
+StartShipWeaponConfig(NewShipType,"MPP_DreadnaughtAutogun","Weapon_HullDefense1","Weapon_HullDefense1");
+StartShipWeaponConfig(NewShipType,"MPP_DreadnaughtAutogun","Weapon_HullDefense2","Weapon_HullDefense2");
+StartShipWeaponConfig(NewShipType,"MPP_DreadnaughtAutogun","Weapon_HullDefense3","Weapon_HullDefense3");
+StartShipWeaponConfig(NewShipType,"MPP_DreadnaughtAutogun","Weapon_HullDefense4","Weapon_HullDefense4");
+StartShipWeaponConfig(NewShipType,"MPP_DreadnaughtAutogun","Weapon_HullDefense5","Weapon_HullDefense5");
+StartShipWeaponConfig(NewShipType,"MPP_DreadnaughtAutogun","Weapon_HullDefense6","Weapon_HullDefense6");
+StartShipWeaponConfig(NewShipType,"MPP_DreadnaughtAutogun","Weapon_HullDefense7","Weapon_HullDefense7");
+StartShipWeaponConfig(NewShipType,"MPP_DreadnaughtAutogun","Weapon_HullDefense8","Weapon_HullDefense8");
+StartShipWeaponConfig(NewShipType,"MPP_DreadnaughtAutogun","Weapon_HullDefense9","Weapon_HullDefense9");
+StartShipWeaponConfig(NewShipType,"MPP_DreadnaughtAutogun","Weapon_HullDefense10","Weapon_HullDefense10");
 StartShipWeaponConfig(NewShipType,"Hgn_DreadnaughtChinTurret","Weapon_DreadTurret","Weapon_DreadTurret");
 addShield(NewShipType,"EMP",10000,20);
 SpawnSalvageOnDeath(NewShipType,"Slv_Chunk_Lrg03",1, 0.40,0,0,0, 0,0,0,50,0,0,0,200,0,0,0,50,0,0,0,50);
@@ -192,3 +194,16 @@ NewShipType.maxFalloffForce=500*10
 NewShipType.explosiveDamageOnDeath=745
 NewShipType.radiusDamageEvadeMod=1.1
 NewShipType.canSurround=1
+
+NewShipType.allowScuttle = 0;
+
+-- kaboom
+NewShipType.explosiveDamageOnDeath=4000
+NewShipType.minFalloffDamageDist=500
+NewShipType.maxFalloffDamageDist=500 * 10 -- ref: ms max is 3k
+NewShipType.maxFalloffForce=500*10
+
+NewShipType.explosiveScuttleDamageOnDeath=4000
+NewShipType.maxFalloffScuttleDamageDist=800*3
+
+addCustomCode(NewShipType, "data:scripts/driver.lua", "load", "create", "update", "destroy", "mpp_dreadnaught", 1);

@@ -11,6 +11,8 @@ if (modkit_player_proto == nil) then
 	
 	function initPlayers()
 		if (GLOBAL_PLAYERS == nil) then
+			---@class GLOBAL_PLAYERS : MemGroup
+			---@field _entities Player[]
 			GLOBAL_PLAYERS = modkit.MemGroup.Create("mg-players-global");
 		
 			for i = 0, Universe_PlayerCount() - 1 do
@@ -39,6 +41,12 @@ if (modkit_player_proto == nil) then
 				end
 				return out;
 			end
+
+			function GLOBAL_PLAYERS:alive()
+				return modkit.table.filter(self:all(), function (player)
+					return player:isAlive();
+				end);
+			end
 		end
 	end
 
@@ -61,6 +69,7 @@ if (modkit_player_proto == nil) then
 	end
 
 	-- Whether or not the player is human
+	---@return bool
 	function modkit_player_proto:isHuman()
 		return self:difficulty() == 0;
 	end
@@ -145,9 +154,12 @@ if (modkit_player_proto == nil) then
 	-- === end of research stuff ===
 
 	--- Return `1` if this player is allied with the `other`. `0` otherwise.
-	---@param other table
+	---@param other Player
 	---@return bool
 	function modkit_player_proto:alliedWith(other)
+		if (self.id == -1 or other.id == -1) then
+			return nil;
+		end
 		return self.id == other.id or AreAllied(self.id, other.id) == 1;
 	end
 
@@ -205,8 +217,9 @@ if (modkit_player_proto == nil) then
 	end
 
 	--- Whether or not the player is alive.
+	---@return bool
 	function modkit_player_proto:isAlive()
-		return Player_IsAlive(self.id);
+		return Player_IsAlive(self.id) == 1;
 	end
 
 	--- Returns whether or not the player has this subsystem.

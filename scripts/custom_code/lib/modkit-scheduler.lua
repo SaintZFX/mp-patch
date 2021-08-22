@@ -5,6 +5,14 @@
 ---@class modkit_scheduler_proto : Ship, SchedulerAttribs
 modkit_scheduler_proto = {
 	update_globals_interval = 5, -- .5 seconds
+
+	---@alias FilterFn fun(): Ship[]
+
+	---@class SheduledFilters
+	---@field corvettes FilterFn
+	---@field drones FilterFn
+	---@field strike FilterFn
+
 	filters = {
 		builders = function (ship)
 			return ship:canBuild();

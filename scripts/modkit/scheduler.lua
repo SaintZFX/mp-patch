@@ -10,11 +10,11 @@ if (H_SCHEDULER == nil) then
 	--- minimum tick rate (which is limited by whatever is set in their .ship file). It also allows these scripts
 	--- to time different functions to different intervals as they desire, without needing to keep track of timers.
 	scheduler = {
-		tick = 0,
+		tick = 1,
 		seconds_per_tick = 0.1, -- lowest is 0.05, presumably
 		scheduled_events = {}, -- table with signature: { fn: function, data: integer }
 		one_off_events = {},
-		longest_scheduled = 1, -- to stop `tick` overflowing we wrap when it reaches the most infrequent events tick interval
+		max_tick = 1, -- to stop `tick` overflowing we wrap when it reaches the most infrequent events tick interval
 		new_event_index = 1 -- used to provide new events with an index (increment)
 	};
 
@@ -34,7 +34,14 @@ if (H_SCHEDULER == nil) then
 				end
 			end
 		end
-		self.tick = mod(self.tick + 1, self.longest_scheduled); -- wrap if > than `self.longest_scheduled`
+		self.tick = max(1, mod(self.tick + 1, self.max_tick)); -- wrap if > than `self.max_tick` (start at 1)
+	end
+
+
+	function scheduler:calcInterval()
+		return modkit.table.reduce(self.scheduled_events, function (product, _, interval)
+			return product * interval;
+		end, 1);
 	end
 
 	--- Calls the supplied function `fn` every `interval` scheduler ticks. Useful to bypass a ships update rate.
@@ -49,7 +56,6 @@ if (H_SCHEDULER == nil) then
 	---@return integer
 	function scheduler:every(interval, fn, offset, data)
 		if (interval == nil or fn == nil) then
-			print("[modkit]: `every` call requires both an interval and a callback function to work.");
 			return nil;
 		end
 		
@@ -82,9 +88,8 @@ if (H_SCHEDULER == nil) then
 			self.scheduled_events[interval] = {};
 		end
 		self.scheduled_events[interval][new_event.id] = new_event;
-		if (self.longest_scheduled < interval) then -- if this interval is longer than our record, update it to match
-			self.longest_scheduled = interval;
-		end
+
+		self.max_tick = self:calcInterval();
 
 		return new_event.id;
 	end
@@ -104,31 +109,23 @@ if (H_SCHEDULER == nil) then
 				end
 			end
 		end
+
+		self.max_tick = self:calcInterval();
 	end
 
-	function scheduler:once(fn, initial_delay, data)
-		if (initial_delay) then
-			local new_event = {
-				id = self.new_event_index,
-				data = data
-			};
-			self.new_event_index = self.new_event_index + 1;
+	---WIP
+	---@param delay integer
+	---@param fn fun()
+	---@param data any
+	function scheduler:once(delay, fn, data)
+		local fire_at = self.tick + delay;
 
-			local outer_self = self;
-			function new_event:fn()
-				%fn({
-					id = %new_event.id,
-					data = %new_event.data
-				});
-				%outer_self.one_off_events[%outer_self.tick][%new_event.id] = nil; -- self clear
-			end
-
-			if (self.one_off_events[self.tick + initial_delay] == nil) then
-				self.one_off_events[self.tick + initial_delay] = {};
-			end
-			self.one_off_events[self.tick + initial_delay][new_event.id] = new_event;
-			modkit.table.printTbl(self.one_off_events);
+		local wrapper = function (event)
+			%fn();
+			%self.scheduled_events[%fire_at][event.id] = nil; -- clear self
 		end
+		
+		self:every(fire_at, wrapper, nil, data);
 	end
 
 	modkit.scheduler = scheduler;

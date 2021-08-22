@@ -1,3 +1,8 @@
+---@alias CapturableModifier
+---| '0' # Ship cannot be captured
+---| '1' # Ship can be captured
+---| '2' # Ship can be captured (used by stock code)
+
 ---@class ShipAttribs : Attribs
 ---@field _stunned number
 ---@field _ab_targets table
@@ -7,6 +12,9 @@
 ---@field _reposition_volume string
 ---@field _default_vol string
 ---@field _auto_launch '0'|'1'
+---@field _visibility table<Player, Visibility>
+---@field _capturable_mod CapturableModifier
+---@field _ghosted bool
 
 ---@class Ship : Base, ShipAttribs
 modkit_ship = {
@@ -23,7 +31,11 @@ modkit_ship = {
 			_despawned_at_volume = "despawn-vol-" .. s,
 			_reposition_volume = "reposition-vol-" .. s,
 			_default_vol = "vol-default-" .. s,
-			_auto_launch = 1
+			_auto_launch = 1,
+			_visibility = {
+				default = VisNone
+			},
+			_capturable_mod = 1
 		};
 	end,
 };
@@ -70,6 +82,7 @@ function modkit_ship:actualSpeedSq()
 end
 
 --- Returns the ship's current position (or the center position of the ship's batch squad).
+--- If `pos` is supplied, it will set the position of the ship instantly.
 ---
 ---@param pos Position
 ---@return Position
@@ -185,6 +198,36 @@ function modkit_ship:attackPlayer(player)
 	return SobGroup_AttackPlayer(self.own_group, player.id);
 end
 
+--- Causes this ship to begin capturing `targets`, which can be a single ship or a table of ships.
+---
+---@param targets Ship | Ship[]
+function modkit_ship:capture(targets)
+	if (targets.own_group) then
+		SobGroup_CaptureSobGroup(self.own_group, targets.own_group);
+	else
+		local temp_group = SobGroup_FromShips(self.own_group .. "-temp-capture-group", targets);
+		SobGroup_CaptureSobGroup(self.own_group, temp_group);
+	end
+end
+
+--- Causes this ship to begin salvaging `targets`, which can be a single ship or a table of ships.
+---
+---@param targets Ship | Ship[]
+function modkit_ship:salvage(targets)
+	if (targets.own_group) then
+		SobGroup_SalvageSobGroup(self.own_group, targets.own_group);
+	else
+		local temp_group = SobGroup_FromShips(self.own_group .. "-temp-salvage-group", targets);
+		SobGroup_SalvageSobGroup(self.own_group, temp_group);
+	end
+end
+
+--- Makes the ship stop (issues a stop command).
+---
+function modkit_ship:stop()
+	SobGroup_Stop(self.player.id, self.own_group);
+end
+
 function modkit_ship:move(where)
 	if (type(where) == "string") then -- a volume
 		SobGroup_Move(self.player.id, self.own_group, where);
@@ -258,6 +301,20 @@ function modkit_ship:stance(new_stance)
 		SobGroup_SetStance(self.own_group, new_stance);
 	end
 	return SobGroup_GetStance(self.own_group);
+end
+
+--- Causes this ship to be 'ghosted', which is pretty much akin to no-clip (no collisions will affect this ship).
+---
+---@param enabled '0'|'1'
+---@return bool
+function modkit_ship:ghost(enabled)
+	if (enabled == 0) then
+		self._ghosted = nil;
+	else
+		self._ghosted = 1;
+	end
+	SobGroup_SetGhost(self.own_group, enabled);
+	return self._ghosted;
 end
 
 --- Launches `docked` from this ship, if `docked` is currently docked with this ship.
@@ -454,7 +511,7 @@ end
 
 --- Returns `1` if this ship is attacking anything, else `nil`. If `target` is provided, check instead if
 -- this ship is attacking that target (instead of anything).
----@param target Ship
+---@param target Ship | 'nil'
 ---@return bool
 function modkit_ship:attacking(target)
 	if (target) then
@@ -464,6 +521,18 @@ function modkit_ship:attacking(target)
 	else
 		return SobGroup_AnyAreAttacking(self.own_group) == 1;
 	end
+end
+
+--- Returns whether or not this ship is currently capturing anything, or just the specified `target` if supplied.
+---@param target Ship | 'nil'
+---@return bool
+function modkit_ship:capturing(target)
+	if (target) then
+		local capturing_group = SobGroup_Fresh("capturing-group-" .. self.id);
+		SobGroup_GetSobGroupCapturingGroup(target.own_group, capturing_group);
+		return SobGroup_GroupInGroup(capturing_group, self.own_group) == 1;
+	end
+	return self:isDoingAbility(AB_Capture);
 end
 
 --- Returns all guard targets for this ship (or nil). If `target` is provided, returns whether or not this ship is guarding the `target`.
@@ -480,6 +549,14 @@ function modkit_ship:guarding(target)
 	end
 end
 
+--- Returns whether the players owning this ship and the `other` ship are allied.
+---
+---@param other Ship
+---@return bool
+function modkit_ship:alliedWith(other)
+	return self.player:alliedWith(other.player);
+end
+
 --- Returns `1` if this ship is under attack from any source, else `nil`. If `attacker` is provided, check instead if
 --- this ship is under attack by that attacker (instead of anything).
 ---
@@ -492,6 +569,10 @@ function modkit_ship:underAttack(attacker)
 	return SobGroup_UnderAttack(self.own_group) == 1;
 end
 
+--- Returns the command targets of the
+---@param command integer
+---@param source table
+---@return table
 function modkit_ship:commandTargets(command, source)
 	local targets_group = SobGroup_Fresh("targets-group-" .. self.id .. "-" .. command);
 	SobGroup_GetCommandTargets(targets_group, self.own_group, command);
@@ -514,6 +595,22 @@ end
 
 function modkit_ship:allInHyperSpace()
 	return SobGroup_AreAllInHyperspace(self.own_group);
+end
+
+-- === Flags (need better name) ===
+
+--- Sets the 'capturable' modifier flag on this ship. This flag only effects ships with the `"CanBeCaptured"` ability.
+---
+--- **Note: There is no way to check whether a ship is capturable or not, so this function is not a getter for that, only for this modifier.**
+---
+---@param capturable CapturableModifier
+---@return CapturableModifier
+function modkit_ship:capturableModifier(capturable)
+	if (capturable) then
+		self._capturable_mod = capturable;
+		SobGroup_SetCaptureState(self.own_group, capturable);
+	end
+	return self._capturable_mod;
 end
 
 -- === Ability stuff ===
@@ -593,6 +690,33 @@ function modkit_ship:madState(animation_name)
 	SobGroup_SetMadState(self.own_group, animation_name);
 end
 
+-- === Visibility ===
+
+--- Returns (and optionally sets) the inherant visibility of this ship. If no player is specified, then this function sets the 'default' visibility of
+--- this ship for _all_ players. If a player _is_ specified, then this 'specific' value for this player overrides any defaults.
+---
+--- - `specific_player` is either a player index or `"default"` (if `nil`, becomes `"default"`), which is applied as a base value which can be overridden by specific indexed values.
+--- - `visibility` is an integer in the range `0 - 2`, aliased by the global varaibels `VisNone`, `VisSecondary`, and `VisFull`.
+---
+---@param visibility Visibility
+---@param specific_player string|integer
+---@return Visibility
+function modkit_ship:visibility(visibility, specific_player)
+	specific_player = specific_player or "default";
+	-- here we set player <-> visibility:
+	if (visibility) then
+		self._visibility[specific_player] = visibility;
+	end
+
+	-- for each player, allow them to see this ship according to their specific rules, or the 'default' rule if no specific rules have been specified:
+	for _, player in GLOBAL_PLAYERS:all() do
+		local visibility = self._visibility[player.id] or self._visibility["default"];
+		SobGroup_SetInherentVisibility(self.own_group, player.id, visibility);
+	end
+
+	return self._visibility[specific_player];
+end
+
 -- === Spawning ===
 
 --- Causes this previously despawned ship to respawn at the last place it despawned, unless a new volume is given.
@@ -617,22 +741,29 @@ function modkit_ship:spawn(spawn, volume)
 	return self._despawned_at_volume;
 end
 
---- Spawns a new ship at `position`
----@param type any
+--- Spawns a new ship of `type` at `position` for `player_index`. This new ship is placed in `spawn_group`, or a fresh group if `spawn_group` is not supplied.
+---
+--- **Note: The temporary group returned should be functionally equivalent to `own_group` of a more typically
+--- available ship, but is _not_ the same group (it should only contain the same ships).**
+---
+---@param ship_type any
 ---@param position? any
+---@param player_index? integer
 ---@param spawn_group? string
 ---@return string
-function modkit_ship:spawnShip(type, position, spawn_group)
+function modkit_ship:spawnShip(ship_type, position, player_index, spawn_group)
 	position = position or self:position();
 	spawn_group = spawn_group or SobGroup_Fresh("spawner-group-" .. self.id);
+	player_index = player_index or self.player.id;
 	local volume_name = Volume_Fresh("spawner-vol-" .. self.id, position);
-	SobGroup_SpawnNewShipInSobGroup(self.player.id, type, "-", spawn_group, volume_name);
+	SobGroup_SpawnNewShipInSobGroup(player_index, ship_type, "-", spawn_group, volume_name);
 	Volume_Delete(volume_name);
 	return spawn_group;
 end
 
 --- Causes this ship to produce a new ship of the given `type`, if it can do so.
 --- The created ship is available through a temporary group (`spawn_group`).
+---
 --- **Note: The temporary group returned should be functionally equivalent to `own_group` of a more typically
 --- available ship, but is _not_ the same group (it should only contain the same ships).**
 ---

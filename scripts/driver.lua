@@ -10,18 +10,52 @@ if (H_DRIVER == nil) then
 		dofilepath("data:scripts/modkit.lua");
 	end
 
+	---@class GLOBAL_SHIPS : SheduledFilters, MemGroup
+	---@field _entities Ship[]
+	---@field all fun(): Ship[]
 	GLOBAL_SHIPS = modkit.MemGroup.Create("mg-ships-global");
 
 	initPlayers(); -- modkit/player.lua
 
-	function GLOBAL_SHIPS:allied(caller)
+	--- Returns all ships which are allied with the `caller`.
+	---
+	---@param caller Ship
+	---@param filter_predicate fun(ship: Ship, id: integer, collection: Ship[]): bool
+	---@return Ship[]
+	function GLOBAL_SHIPS:allied(caller, filter_predicate)
 		local allied_ships = {};
-		for index, ship in self:all() do
+		local collection;
+		if (filter_predicate) then
+			collection = self:filter(filter_predicate);
+		else
+			collection = self:all();
+		end
+		for index, ship in collection do
 			if (ship:alliedWith(caller)) then
 				allied_ships[index] = ship;
 			end
 		end
 		return allied_ships;
+	end
+
+	--- Returns all ships which are not allied with the `caller`.
+	---
+	---@param caller Ship
+	---@param filter_predicate fun(ship: Ship, id: integer, collection: Ship[]): bool
+	---@return Ship[]
+	function GLOBAL_SHIPS:enemies(caller, filter_predicate)
+		local enemy_ships = {};
+		if (filter_predicate) then
+			collection = self:filter(filter_predicate);
+		else
+			collection = self:all();
+		end
+		for index, ship in collection do
+			if (ship:alliedWith(caller) == nil) then
+				enemy_ships[index] = ship;
+			end
+		end
+		return enemy_ships;
 	end
 
 	--- Registers the incoming sobgroup, player index, and ship id into a Ship table within the global registry.

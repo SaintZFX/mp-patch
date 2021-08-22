@@ -1,0 +1,29 @@
+
+StartWeaponConfig(NewWeaponType,"Gimble","Bullet","Plasma_Bomb","Normal",1000,1500,0,0,0,0,1,1,0,0.2,2,1,0,0,0,0,0.1,"Normal",0,0,0);
+AddWeaponResult(NewWeaponType,"Hit","DamageHealth","Target",100,100,"");
+setPenetration(NewWeaponType,5,1,
+{MoverArmour=1.1},
+{LightArmour=0.5},
+{LightArmour_hw1=0.6},
+{MediumArmour=0.9},
+{HeavyArmour=3},
+{DestroyerArmour=1.5},
+{SuperUtilityArmour = 0.8},
+{PlanetKillerArmour=0},
+{TorpedoArmor=0},
+{HeavyMissileArmor=0},
+{SmallMissileArmor=0},
+{SpaceMineArmor=1},
+{ResArmour=0.6},
+{ChunkArmour=5});
+setAccuracy(NewWeaponType,1,
+{SpaceMine=0.01},
+{Torpedo=0},
+{HeavyMissile=0},
+{SmallMissile=0});
+setAngles(NewWeaponType,15,0,0,0,0);
+setFireMultFactor(NewWeaponType, 1.0);
+setRangeBoost(NewWeaponType, 1.0);
+setRangeByStance(NewWeaponType, 1.0, 1.0, 1.0);
+
+setBallistics(NewWeaponType,0,1.0);

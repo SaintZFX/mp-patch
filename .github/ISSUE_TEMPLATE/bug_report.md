@@ -7,6 +7,10 @@ assignees: Novaras
 
 ---
 
+**Patch version**
+
+_The current patch version which you saw the bug on._
+
 **Describe the bug**
 
 _A clear and concise description of what the bug is._

@@ -1,0 +1,19 @@
+Root = "DATA:\\LevelData\\Multiplayer\\deathmatch_xeno"
+
+ExtFilter = "levels_dm,levels_hw2,levels_dm_hw2,levels_hw1,levels_dm_hw1"
+
+--Tags - Set single tags for all levels...
+Tags = "dm,hw2,dm_hw2,hw1,dm_hw1"
+
+--TagSets - Set groups of tags for all levels (defined in Scripts/Tags/*.tags) - makes bulk editing faster...
+--TagSets = "hw2"
+
+LevelList = {
+	{
+		Tags = "8p",
+		Name = "Remnant",
+		Desc = "Spectators 4P Xeno - Remnant",
+		MaxPlayers = 8,
+	},
+
+}

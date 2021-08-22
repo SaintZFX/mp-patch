@@ -56,6 +56,23 @@ function modkit_base:batchSize()
 	return SobGroup_GetStaticF(self.type_group, "buildBatch");
 end
 
+function modkit_base:print(...)
+	local out_tbl = {};
+	out_tbl[1] = "[" .. self.own_group .. "]: "
+	for i, v in arg do
+		if (i ~= 'n') then
+			out_tbl[i + 1] = v;
+		end
+	end
+	local out_str = out_tbl[1];
+	for i, v in out_tbl do
+		if (i > 1) then
+			out_str = out_str .. tostring(v) .. "\t";
+		end
+	end
+	print(out_str);
+end
+
 modkit.compose:addBaseProto(modkit_base);
 
 print("go base!");

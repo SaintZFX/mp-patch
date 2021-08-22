@@ -57,6 +57,12 @@ if (nil) then
 	COMMAND_Retire = 16;
 	-- ...todo
 
+	VisNone = 0;
+	VisSecondary = 1;
+	VisFull = 2;
+
+	---@alias Visibility 'VisNone'|'VisSecondary'|'VisFull'
+
 	OffensiveROE = 0;
 	DefensiveROE = 1;
 	PassiveROE = 2;
@@ -292,6 +298,25 @@ if (nil) then
 	function SobGroup_AttackSelection(player_index, group_name, target_selection, attack)
 	end
 
+	--- Makes ships with capture ability in `group_name` begin capturing viable ships in `target_group`.
+	---
+	---@param group_name string
+	---@param target_group string
+	function SobGroup_CaptureSobGroup(group_name, target_group)
+	end
+
+	--- Makes ships with salvage ability in `group_name` begin salvaging viabel ships in `target_group`.
+	---
+	---@param group_name string
+	---@param target_group string
+	function SobGroup_SalvageSobGroup(group_name, target_group)
+	end
+
+	---comment
+	---@param group_name any
+	function SobGroup_GetTechHarvestedAmount(group_name)
+	end
+
 	--- Clears the target `group_name` of any ships, if it exists.
 	---
 	---@param group_name string
@@ -336,6 +361,24 @@ if (nil) then
 	---@param volume_name string
 	---@return nil
 	function SobGroup_SpawnNewShipInSobGroup(player_index, ship_type, new_squad_name, target_group, volume_name)
+	end
+
+	--- Causes ships in target_group to become 'ghosted', which is pretty much akin to a 'no-clip' mode whereby the affected ships ignore collision with other objects.
+	---@param target_group string
+	---@param enable '0'|'1'
+	---@return nil
+	function SobGroup_SetGhost(target_group, enable)
+	end
+
+	--- Sets the _inherent_ visibility of the `target_group` for player `target_player`.
+	---
+	--- Note: there is no corresponding getter for this value, so you should store it yourself if you need to get it later.
+	---
+	---@param target_group string
+	---@param target_player integer
+	---@param visibility Visibility
+	---@return nil
+	function SobGroup_SetInherentVisibility(target_group, target_player, visibility)
 	end
 
 	--- Selection stuff (NEEDS TESTING, USED ONLY BY DEFENSE FIGHTER CUSTOM CODE):
